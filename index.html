@@ -116,24 +116,6 @@
             outline: none;
             border-color: #667eea;
         }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .tab {
-            padding: 10px 25px;
-            background: #f0f0f0;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        .tab.active {
-            background: #667eea;
-            color: white;
-        }
         .course-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -205,19 +187,6 @@
             color: #667eea;
             margin-bottom: 20px;
         }
-        .key-display {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 15px 0;
-        }
-        .key-display code {
-            font-size: 24px;
-            color: #667eea;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -243,9 +212,6 @@
         .message.error {
             background: #f8d7da;
             color: #721c24;
-        }
-        .hidden {
-            display: none;
         }
         .nav-tabs {
             display: flex;
@@ -286,22 +252,9 @@
         <div id="messageBox"></div>
 
         <div id="mainContent">
-            <div class="card">
-                <h2>报名流程</h2>
-                <p style="color: #666; margin-bottom: 15px;">请按照以下步骤完成报名：</p>
-                <ol style="color: #666; line-height: 2;">
-                    <li><strong>第一步：</strong> 点击"申请密钥"按钮，获取注册密钥</li>
-                    <li><strong>第二步：</strong> 联系组委支付报名费，获取密钥</li>
-                    <li><strong>第三步：</strong> 使用密钥注册账号（选择"选手"或"组委"角色）</li>
-                    <li><strong>第四步：</strong> 登录后开始抢课！</li>
-                </ol>
-                <button class="btn btn-primary" onclick="applyKey()">申请密钥</button>
-                <div id="keyResult" class="hidden" style="margin-top: 20px;">
-                    <div class="key-display">
-                        您的密钥：<code id="generatedKey"></code>
-                    </div>
-                    <p style="color: #666; font-size: 14px;">请支付报名费后使用此密钥注册。如密钥已过期，请重新申请。</p>
-                </div>
+            <div class="card" id="myCoursesCard" style="display: none;">
+                <h2>我的选课</h2>
+                <div id="myCourseList"></div>
             </div>
 
             <div class="card">
@@ -309,19 +262,9 @@
                 <div class="course-grid" id="courseList"></div>
             </div>
 
-            <div class="card" id="myCoursesCard" style="display: none;">
-                <h2>我的选课</h2>
-                <div id="myCourseList"></div>
-            </div>
-
             <div class="card" id="adminPanel" style="display: none;">
                 <h2>组委管理面板</h2>
-                <div class="nav-tabs">
-                    <button class="nav-tab active" onclick="showAdminTab('users')">用户管理</button>
-                    <button class="nav-tab" onclick="showAdminTab('keys')">密钥管理</button>
-                </div>
                 <div id="adminUsers"></div>
-                <div id="adminKeys" style="display: none;"></div>
             </div>
         </div>
     </div>
@@ -361,10 +304,6 @@
                     <option value="选手">选手</option>
                     <option value="组委">组委</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label>注册密钥</label>
-                <input type="text" id="regKey" placeholder="请输入您获得的密钥">
             </div>
             <div style="display: flex; gap: 10px; justify-content: flex-end;">
                 <button class="btn btn-secondary" onclick="hideModal('registerModal')">取消</button>
@@ -426,7 +365,7 @@
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${(course.enrolled / course.capacity) * 100}%"></div>
                     </div>
-                    <button class="btn ${course.enrolled >= course.capacity ? 'btn-secondary' : 'btn-success'}" 
+                    <button class="btn ${course.enrolled >= course.capacity ? 'btn-secondary' : 'btn-success'}"
                             onclick="enrollCourse(${course.id})"
                             ${!currentUser || course.enrolled >= course.capacity ? 'disabled' : ''}>
                         ${course.enrolled >= course.capacity ? '已满' : '选课'}
@@ -491,34 +430,20 @@
             }
         }
 
-        async function applyKey() {
-            const username = prompt('请输入您想要的用户名（将用于注册）：');
-            if (!username) return;
-            const res = await fetch('/api/apply-key', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username })
-            });
-            const data = await res.json();
-            if (data.success) {
-                document.getElementById('generatedKey').textContent = data.key;
-                document.getElementById('keyResult').classList.remove('hidden');
-                showMessage('密钥生成成功，请支付报名费后使用', 'success');
-            } else {
-                showMessage(data.error, 'error');
-            }
-        }
-
         async function register() {
             const username = document.getElementById('regUsername').value;
             const password = document.getElementById('regPassword').value;
             const role = document.getElementById('regRole').value;
-            const key = document.getElementById('regKey').value;
+
+            if (!username || !password) {
+                showMessage('请填写用户名和密码', 'error');
+                return;
+            }
 
             const res = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, role, key })
+                body: JSON.stringify({ username, password, role })
             });
             const data = await res.json();
             if (data.success) {
@@ -533,6 +458,11 @@
         async function login() {
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showMessage('请填写用户名和密码', 'error');
+                return;
+            }
 
             const res = await fetch('/api/login', {
                 method: 'POST',
@@ -559,11 +489,6 @@
         }
 
         async function loadAdminData() {
-            await loadAdminUsers();
-            await loadAdminKeys();
-        }
-
-        async function loadAdminUsers() {
             const res = await fetch('/api/admin/users');
             const users = await res.json();
             document.getElementById('adminUsers').innerHTML = `
@@ -592,47 +517,6 @@
             `;
         }
 
-        async function loadAdminKeys() {
-            const res = await fetch('/api/admin/keys');
-            const keys = await res.json();
-            document.getElementById('adminKeys').innerHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>密钥</th>
-                            <th>状态</th>
-                            <th>使用者</th>
-                            <th>创建时间</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${keys.map(k => `
-                            <tr>
-                                <td>${k.id}</td>
-                                <td><code>${k.key_text}</code></td>
-                                <td>${k.used ? '已使用' : '可用'}</td>
-                                <td>${k.username || '-'}</td>
-                                <td>${new Date(k.created_at).toLocaleString()}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-
-        function showAdminTab(tab) {
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            if (tab === 'users') {
-                document.getElementById('adminUsers').style.display = 'block';
-                document.getElementById('adminKeys').style.display = 'none';
-            } else {
-                document.getElementById('adminUsers').style.display = 'none';
-                document.getElementById('adminKeys').style.display = 'block';
-            }
-        }
-
         function showModal(id) {
             document.getElementById(id).classList.add('show');
         }
@@ -650,7 +534,6 @@
             document.getElementById('regUsername').value = '';
             document.getElementById('regPassword').value = '';
             document.getElementById('regRole').value = '选手';
-            document.getElementById('regKey').value = '';
         }
 
         function showMessage(text, type) {
