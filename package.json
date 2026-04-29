@@ -1,0 +1,17 @@
+{
+  "name": "ayes2026-course-selection",
+  "version": "1.0.0",
+  "description": "抢课系统 - 用户注册、登录、抢课功能",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "better-sqlite3": "^9.4.3",
+    "express-session": "^1.17.3",
+    "body-parser": "^1.20.2",
+    "uuid": "^9.0.0"
+  }
+}
