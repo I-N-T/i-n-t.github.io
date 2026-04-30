@@ -213,7 +213,3 @@ app.delete('/api/admin/exam-links/:id', (req, res) => {
     db.prepare('DELETE FROM exam_links WHERE id = ?').run(req.params.id);
     res.json({ success: true, message: '笔试链接删除成功' });
 });
-
-app.listen(3000, () => {
-    console.log('服务器运行在 http://localhost:3000');
-});
