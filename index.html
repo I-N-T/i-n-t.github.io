@@ -1,789 +1,1369 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AYES 2026</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
-        header {
-            background: white;
-            padding: 25px 35px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        h1 {
-            color: #667eea;
-            font-size: 32px;
-            font-weight: 700;
-        }
-        .user-info { display: flex; align-items: center; gap: 20px; }
-        .user-info span { color: #333; font-weight: 600; font-size: 16px; }
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5568d3; transform: translateY(-2px); }
-        .btn-secondary { background: #764ba2; color: white; }
-        .btn-secondary:hover { background: #653d91; transform: translateY(-2px); }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-danger:hover { background: #c82333; }
-        .btn-success { background: #28a745; color: white; }
-        .btn-success:hover { background: #218838; }
-        .btn-outline { background: transparent; border: 2px solid #667eea; color: #667eea; }
-        .btn-outline:hover { background: #667eea; color: white; }
-        .btn-sm { padding: 8px 16px; font-size: 13px; }
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-        }
-        .card h2 {
-            color: #333;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #667eea;
-            font-size: 22px;
-        }
-        .form-group { margin-bottom: 20px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-        .modal.show { display: flex; }
-        .modal-content {
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            max-width: 550px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        .modal h2 { color: #667eea; margin-bottom: 25px; font-size: 24px; }
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 35px;
-            height: 35px;
-            border: none;
-            background: #f5f5f5;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            color: #666;
-        }
-        .close-btn:hover { background: #e0e0e0; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 14px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            font-weight: 600;
-        }
-        tr:hover { background: #f8f9fa; }
-        .message {
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .message.success { background: #d4edda; color: #155724; }
-        .message.error { background: #f8d7da; color: #721c24; }
-        .nav-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            background: #f5f5f5;
-            padding: 8px;
-            border-radius: 10px;
-        }
-        .nav-tab {
-            padding: 12px 30px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s;
-        }
-        .nav-tab.active {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .notification-item {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.3s;
-        }
-        .notification-item:hover { transform: translateX(5px); }
-        .notification-item.unread { background: #eef2ff; }
-        .notification-title { font-weight: 600; color: #333; margin-bottom: 8px; }
-        .notification-content { color: #666; font-size: 14px; margin-bottom: 10px; }
-        .notification-time { font-size: 12px; color: #999; }
-        .exam-link-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            color: white;
-        }
-        .exam-link-card h3 { margin-bottom: 10px; font-size: 18px; }
-        .exam-link-card a {
-            color: white;
-            text-decoration: underline;
-            font-size: 16px;
-            display: inline-block;
-            margin-top: 10px;
-        }
-        .exam-link-card a:hover { color: #ffe6e6; }
-        .participant-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 25px;
-            border-radius: 12px;
-            color: white;
-            text-align: center;
-        }
-        .stat-number { font-size: 36px; font-weight: 700; }
-        .stat-label { font-size: 14px; opacity: 0.9; }
-        .action-buttons { display: flex; gap: 10px; }
-        .hidden { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ayes2026 报名系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --red: #9b2335;
+    --cream: #f5f0e8;
+    --cream-dark: #ede5d4;
+    --white: #fdfcf9;
+    --muted: #7a7060;
+    --shadow: 0 8px 40px rgba(26,26,46,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ══ 初始落地页 ══════════════════════════════════════ */
+
+  /* 全屏背景容器：背景图片在这里设置，换图只需改 background-image 这一行 */
+  #landing {
+    position: fixed;
+    inset: 0;
+    background-image: url('bg.jpg');   /* ← 换背景图改这里，支持任意图片路径或URL */
+    background-size: cover;
+    background-position: center;
+    background-color: #1a1a2e;         /* 图片未加载时的兜底颜色 */
+    transition: filter 0.5s ease;
+    z-index: 0;
+  }
+
+  /* 落地页遮罩：深色半透明层，让文字在任何背景图上都清晰可读 */
+  #landing::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      160deg,
+      rgba(26,26,46,0.55) 0%,
+      rgba(26,26,46,0.35) 50%,
+      rgba(26,26,46,0.65) 100%
+    );
+  }
+
+  /* 弹窗打开时背景变暗变模糊 */
+  #landing.dimmed {
+    filter: brightness(0.45) blur(6px);
+  }
+
+  /* 落地页内容区：垂直居中，相对定位使其层叠在遮罩之上 */
+  #landing-content {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    color: #fff;
+  }
+
+  /* 落地页徽章 */
+  .landing-badge {
+    display: inline-block;
+    border: 1px solid rgba(201,168,76,0.7);
+    color: rgba(201,168,76,0.9);
+    font-size: 11px;
+    letter-spacing: 4px;
+    padding: 5px 18px;
+    margin-bottom: 24px;
+    font-family: 'Noto Serif SC', serif;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  /* 落地页主标题 */
+  #landing-content h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(36px, 7vw, 64px);
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    margin-bottom: 20px;
+    animation: fadeDown 0.7s ease 0.1s both;
+  }
+
+  /* 落地页介绍文字 */
+  #landing-content .landing-desc {
+    font-size: clamp(13px, 2vw, 16px);
+    color: rgba(255,255,255,0.78);
+    line-height: 1.9;
+    max-width: 480px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.7s ease 0.2s both;
+  }
+
+  /* 落地页按钮组 */
+  .landing-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.7s ease 0.3s both;
+  }
+
+  .btn-landing-primary {
+    padding: 13px 36px;
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-landing-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+  .btn-landing-secondary {
+    padding: 13px 36px;
+    background: transparent;
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.6);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+  .btn-landing-secondary:hover {
+    border-color: #fff;
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-2px);
+  }
+
+  /* 右上角按钮（小屏备用，始终可见） */
+  #corner-btns {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+    animation: fadeDown 0.5s ease both;
+  }
+
+  .corner-btn {
+    padding: 7px 18px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    border: 1.5px solid rgba(255,255,255,0.6);
+    background: rgba(26,26,46,0.35);
+    color: #fff;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s;
+  }
+  .corner-btn:hover { background: rgba(26,26,46,0.7); border-color: #fff; }
+  .corner-btn.gold { background: rgba(201,168,76,0.85); border-color: var(--gold); color: var(--ink); }
+  .corner-btn.gold:hover { background: var(--gold); }
+
+  /* ══ 弹窗（模态框）══════════════════════════════════ */
+
+  /* 模态框遮罩层：点击空白处可关闭 */
+  #modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+
+  #modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* 弹窗卡片：从下方弹入 */
+  #modal-card {
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--white);
+    border: 1px solid rgba(201,168,76,0.3);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    position: relative;
+    transform: translateY(30px);
+    transition: transform 0.35s ease;
+  }
+
+  #modal-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+  }
+
+  #modal-overlay.open #modal-card {
+    transform: translateY(0);
+  }
+
+  /* 弹窗关闭按钮 */
+  #modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--muted);
+    cursor: pointer;
+    line-height: 1;
+    z-index: 1;
+    transition: color 0.2s;
+  }
+  #modal-close:hover { color: var(--ink); }
+
+  /* ══ 原有卡片内部样式（移入弹窗后沿用）══════════════ */
+
+  /* 弹窗内标题区 */
+  .header { text-align: center; margin-bottom: 24px; padding: 24px 32px 0; }
+  .header p { font-size: 13px; color: var(--muted); letter-spacing: 0.5px; }
+
+  /* 弹窗主容器 */
+  .app { width: 100%; position: relative; }
+
+  /* 弹窗内卡片（去掉外层 box-shadow，由 modal-card 接管） */
+  .card { background: transparent; border: none; box-shadow: none; }
+  .card::before { display: none; }
+
+  .header-badge {
+    display: inline-block;
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 4px 16px;
+    margin-bottom: 16px;
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  .header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* 主卡片容器：白色背景，金色边框，带向上淡入动画 */
+  .card {
+    background: var(--white);
+    border: 1px solid rgba(201,168,76,0.3);
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.6s ease 0.1s both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+  }
+
+  /* 标签栏：登录 / 注册两个选项横排，底部有分隔线 */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 16px;
+    background: none;
+    border: none;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    letter-spacing: 0.5px;
+  }
+
+  .tab-btn.active {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 20%; right: 20%;
+    height: 2px;
+    background: var(--gold);
+  }
+
+  .tab-btn:hover:not(.active) {
+    color: var(--ink);
+    background: rgba(201,168,76,0.04);
+  }
+
+  /* 面板（登录 / 注册 / 忘记密码）：默认隐藏，激活时淡入显示 */
+  .panel { display: none; padding: 32px; }
+  .panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+  /* 身份选择卡片组：两列网格排列，用于选择选手或组委身份 */
+  .role-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .role-card {
+    border: 1.5px solid var(--cream-dark);
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+    background: var(--white);
+  }
+
+  .role-card:hover { border-color: var(--gold); }
+
+  .role-card.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .role-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 6px; right: 8px;
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .role-icon {
+    font-size: 22px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .role-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .role-desc {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* 小节标题：带右侧延伸横线，用于分隔表单各信息组 */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--cream-dark);
+  }
+
+  /* 表单项：每个字段占一行，底部留间距 */
+  .form-group { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--cream-dark);
+    background: var(--white);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input:focus, select:focus { border-color: var(--gold); }
+  input::placeholder { color: #bbb; }
+
+  /* 密码输入框容器：相对定位，使眼睛图标能绝对定位到右侧 */
+  .pwd-wrap { position: relative; }
+  /* 默认不留右侧空间，外观与普通输入框完全一致；悬停容器时才留出眼睛位置 */
+  .pwd-wrap input { padding-right: 14px; transition: padding-right 0.15s; }
+  .pwd-wrap:hover input { padding-right: 42px; }
+
+  /* 眼睛按钮：默认隐藏（opacity:0），鼠标移入容器后淡入显示 */
+  .pwd-eye {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s, color 0.2s;
+  }
+  /* 鼠标移入密码框容器时显示眼睛，或密码已锁定明文显示时始终可见 */
+  .pwd-wrap:hover .pwd-eye,
+  .pwd-wrap.locked   .pwd-eye { opacity: 1; pointer-events: auto; }
+  .pwd-eye:hover { color: var(--ink); }
+
+  /* 注册时根据身份动态显示的额外字段（选手信息 / 组委信息），切换时带淡入动画 */
+  .extra-fields { display: none; }
+  .extra-fields.show { display: block; animation: fadeIn 0.3s ease; }
+
+  /* 主操作按钮：深色底、浅色字，悬停时有金色光扫过的动画效果 */
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.15) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.4s;
+  }
+
+  .btn-primary:hover { background: #2d2d4e; }
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-primary:active { transform: scale(0.99); }
+
+  /* 分隔线：文字居中，两侧各有一条横线，用于视觉分隔区块 */
+  .divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 38%;
+    height: 1px;
+    background: var(--cream-dark);
+  }
+  .divider::before { left: 0; }
+  .divider::after { right: 0; }
+
+  /* 消息通知横幅：成功为绿色，错误为红色，左侧有彩色竖条标识 */
+  .notification {
+    display: none;
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    border-left: 3px solid;
+    animation: fadeIn 0.3s ease;
+  }
+  .notification.success { background: #f0f7f0; border-color: #4a9a5a; color: #2d6b3a; }
+  .notification.error { background: #fdf0f0; border-color: var(--red); color: var(--red); }
+  .notification.show { display: block; }
+
+  /* 登录后仪表盘：默认隐藏，登录成功后通过添加 .show 类切换显示 */
+  .dashboard { display: none; padding: 32px; animation: fadeIn 0.4s ease; }
+  .dashboard.show { display: block; }
+
+  .dash-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .dash-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .dash-role-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  .logout-btn {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .logout-btn:hover { color: var(--red); }
+
+  /* 选手仪表盘 — 笔试链接卡片：金色渐变背景，突出显示专属考试链接 */
+  .exam-card {
+    border: 1px solid rgba(201,168,76,0.4);
+    background: linear-gradient(135deg, rgba(201,168,76,0.05), rgba(201,168,76,0.12));
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .exam-card-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .exam-link-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    padding: 10px 14px;
+    margin-top: 12px;
+  }
+
+  .exam-link-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .copy-btn {
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .copy-btn:hover { background: var(--gold); color: var(--ink); }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .info-item {
+    background: var(--cream);
+    padding: 12px;
+    text-align: center;
+  }
+
+  .info-item-value {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .info-item-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* 组委仪表盘 — 搜索行：输入框自动占满剩余宽度，搜索按钮固定宽度 */
+  .search-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .search-row input {
+    flex: 1;
+    padding: 9px 12px;
+  }
+
+  .search-row button {
+    padding: 9px 16px;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    font-size: 12px;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--cream-dark);
+    color: var(--ink);
+  }
+
+  tr:hover td { background: rgba(201,168,76,0.05); }
+
+  .status-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+  .status-badge.pending { background: #fff8e6; color: #a07800; border: 1px solid #e8c97a; }
+  .status-badge.done { background: #edf7ed; color: #2d6b3a; border: 1px solid #8dc98d; }
+
+  .table-wrap { overflow-x: auto; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-box {
+    background: var(--cream);
+    padding: 14px;
+    text-align: center;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .stat-num { font-family: 'Noto Serif SC', serif; font-size: 22px; color: var(--ink); font-weight: 700; }
+  .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* 动画定义：fadeUp（向上浮现）、fadeDown（向下浮现）、fadeIn（原地淡入）*/
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* 页脚：在弹窗内底部显示 */
+  .footer {
+    text-align: center;
+    padding: 16px 0 20px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>AYES 2026</h1>
-            <div class="user-info" id="userInfo">
-                <span id="welcomeText"></span>
-                <button class="btn btn-primary" id="loginBtn" onclick="showModal('loginModal')">登录</button>
-                <button class="btn btn-secondary" onclick="showModal('registerModal')">注册</button>
-            </div>
-        </header>
 
-        <div id="messageBox"></div>
 
-        <div id="mainContent">
-            <div class="card" id="homeCard">
-                <h2>欢迎来到 AYES 2026</h2>
-                <p style="color: #666; font-size: 16px; line-height: 1.8;">
-                    AYES (ACM Youth Elite Selection) 是面向青少年的算法竞赛选拔活动。
-                    请注册账号后登录，选手可获取笔试链接，组委可管理选手信息。
-                </p>
-                <div style="margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="showModal('registerModal')">立即报名</button>
-                </div>
-            </div>
+<!-- ══ 全屏背景落地页 ══════════════════════════════════ -->
+<div id="landing">
+  <div id="landing-content">
+  </div>
+</div>
 
-            <div class="card" id="participantDashboard" style="display: none;">
-                <h2>选手中心</h2>
-                <div class="nav-tabs">
-                    <button class="nav-tab active" onclick="showParticipantTab('exam')">笔试链接</button>
-                    <button class="nav-tab" onclick="showParticipantTab('notifications')">通知消息</button>
-                </div>
-                <div id="examTab">
-                    <div id="examLinks"></div>
-                </div>
-                <div id="notificationsTab" style="display: none;">
-                    <div id="notificationList"></div>
-                </div>
-            </div>
+<!-- 右上角常驻按钮 -->
+<div id="corner-btns">
+  <button class="corner-btn" onclick="openModal('login')">登录</button>
+  <button class="corner-btn gold" onclick="openModal('register')">注册</button>
+</div>
 
-            <div class="card" id="adminDashboard" style="display: none;">
-                <h2>组委管理后台</h2>
-                <div class="nav-tabs">
-                    <button class="nav-tab active" onclick="showAdminTab('participants')">选手管理</button>
-                    <button class="nav-tab" onclick="showAdminTab('exam')">笔试链接管理</button>
-                    <button class="nav-tab" onclick="showAdminTab('broadcast')">群发通知</button>
-                </div>
-                <div id="participantsTab">
-                    <div class="participant-stats" id="participantStats"></div>
-                    <table id="participantsTable"></table>
-                </div>
-                <div id="examTabAdmin" style="display: none;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <span style="font-weight: 600; color: #333;">所有笔试链接</span>
-                        <button class="btn btn-success btn-sm" onclick="showAddExamLinkModal()">添加链接</button>
-                    </div>
-                    <table id="examLinksTable"></table>
-                </div>
-                <div id="broadcastTab" style="display: none;">
-                    <div class="form-group">
-                        <label>通知标题</label>
-                        <input type="text" id="broadcastTitle" placeholder="请输入通知标题">
-                    </div>
-                    <div class="form-group">
-                        <label>通知内容</label>
-                        <textarea id="broadcastContent" rows="5" placeholder="请输入通知内容"></textarea>
-                    </div>
-                    <button class="btn btn-primary" onclick="sendBroadcast()">发送给所有选手</button>
-                </div>
-            </div>
+<!-- ══ 弹窗 ════════════════════════════════════════════ -->
+<div id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div id="modal-card">
+    <button id="modal-close" onclick="closeModal()">×</button>
+
+    <div class="app">
+      <div class="header">
+        <p>报名时间：2026年5月11日～6月14日</p>
+      </div>
+
+      <div class="card" id="mainCard">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('login')">登 录</button>
+          <button class="tab-btn" onclick="switchTab('register')">注 册</button>
         </div>
+
+        <div id="notification" class="notification"></div>
+
+    <!-- LOGIN PANEL -->
+    <div class="panel active" id="panel-login">
+      <div class="section-label">选择身份</div>
+      <div class="role-selector">
+        <div class="role-card selected" onclick="selectLoginRole(this, 'participant')">
+          <span class="role-icon">🎓</span>
+          <div class="role-name">选 手</div>
+          <div class="role-desc">参赛选手登录</div>
+        </div>
+        <div class="role-card" onclick="selectLoginRole(this, 'organizer')">
+          <span class="role-icon">🏛️</span>
+          <div class="role-name">组 委</div>
+          <div class="role-desc">组委会成员登录</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>姓名</label>
+        <input type="text" id="loginName" placeholder="请输入注册时填写的真实姓名">
+      </div>
+      <div class="form-group">
+        <label>密码</label>
+        <div class="pwd-wrap">
+          <input type="password" id="loginPwd" placeholder="请输入密码">
+          <button type="button" class="pwd-eye" onmouseenter="showPwd('loginPwd')" onmouseleave="hidePwd('loginPwd')" onclick="togglePwd('loginPwd', this)" title="悬停预览 / 点击锁定显示">
+            <svg id="loginPwd-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-primary" id="loginBtn" onclick="handleLogin()">登 录</button>
+      <div style="text-align:center;margin-top:14px;">
+        <button onclick="showPanel('forgot')" style="background:none;border:none;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;font-family:inherit;">忘记密码？</button>
+      </div>
     </div>
 
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="hideModal('loginModal')">&times;</button>
-            <h2>登录</h2>
-            <div class="form-group">
-                <label>用户名</label>
-                <input type="text" id="loginUsername" placeholder="请输入用户名">
-            </div>
-            <div class="form-group">
-                <label>密码</label>
-                <input type="password" id="loginPassword" placeholder="请输入密码">
-            </div>
-            <button class="btn btn-primary" onclick="login()" style="width: 100%;">登录</button>
-        </div>
+    <!-- FORGOT PASSWORD PANEL -->
+    <div class="panel" id="panel-forgot">
+      <div style="margin-bottom:20px;">
+        <button onclick="showPanel('login')" style="background:none;border:none;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;">← 返回登录</button>
+      </div>
+      <div class="section-label">重置密码</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7;">输入您的真实姓名与注册邮箱，我们将发送重置链接至您的邮箱。</p>
+      <div class="form-group">
+        <label>姓名</label>
+        <input type="text" id="forgotName" placeholder="请输入注册时填写的姓名">
+      </div>
+      <div class="form-group">
+        <label>注册邮箱</label>
+        <input type="email" id="forgotEmail" placeholder="请输入注册邮箱">
+      </div>
+      <button class="btn-primary" id="forgotBtn" onclick="handleForgot()">发 送 重 置 邮 件</button>
     </div>
 
-    <div class="modal" id="registerModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="hideModal('registerModal')">&times;</button>
-            <h2>注册</h2>
-            <div class="form-group">
-                <label>注册类型</label>
-                <select id="regRole">
-                    <option value="选手">选手注册</option>
-                    <option value="组委">组委注册</option>
-                </select>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>用户名 *</label>
-                    <input type="text" id="regUsername" placeholder="请输入用户名">
-                </div>
-                <div class="form-group">
-                    <label>密码 *</label>
-                    <input type="password" id="regPassword" placeholder="请输入密码">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>姓名</label>
-                    <input type="text" id="regName" placeholder="请输入姓名">
-                </div>
-                <div class="form-group">
-                    <label>学校</label>
-                    <input type="text" id="regSchool" placeholder="请输入学校">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>手机号</label>
-                    <input type="text" id="regPhone" placeholder="请输入手机号">
-                </div>
-                <div class="form-group">
-                    <label>邮箱</label>
-                    <input type="email" id="regEmail" placeholder="请输入邮箱">
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="register()" style="width: 100%;">注册</button>
+    <!-- REGISTER PANEL -->
+    <div class="panel" id="panel-register">
+      <div class="section-label">注册身份</div>
+      <div class="role-selector">
+        <div class="role-card selected" onclick="selectRegRole(this, 'participant')">
+          <span class="role-icon">🎓</span>
+          <div class="role-name">选 手</div>
+          <div class="role-desc">参赛选手注册</div>
         </div>
+        <div class="role-card" onclick="selectRegRole(this, 'organizer')">
+          <span class="role-icon">🏛️</span>
+          <div class="role-name">组 委</div>
+          <div class="role-desc">组委会成员注册</div>
+        </div>
+      </div>
+
+      <!-- Common fields -->
+      <div class="form-group">
+        <label>姓名</label>
+        <input type="text" id="regName" placeholder="请输入真实姓名">
+      </div>
+      <div class="form-group">
+        <label>邮箱地址</label>
+        <input type="email" id="regEmail" placeholder="注册后将发送确认邮件">
+      </div>
+      <div class="form-group">
+        <label>密码</label>
+        <div class="pwd-wrap">
+          <input type="password" id="regPwd" placeholder="8位以上，含字母和数字">
+          <button type="button" class="pwd-eye" onmouseenter="showPwd('regPwd')" onmouseleave="hidePwd('regPwd')" onclick="togglePwd('regPwd', this)" title="悬停预览 / 点击锁定显示">
+            <svg id="regPwd-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Participant extra fields -->
+      <div class="extra-fields show" id="participantFields">
+        <div class="section-label">选手信息</div>
+        <div class="form-group">
+          <label>所在学校</label>
+          <input type="text" id="school" placeholder="请输入学校全称">
+        </div>
+        <div class="form-group">
+          <label>年级</label>
+          <select id="grade">
+            <option value="">请选择年级</option>
+            <option>初一</option>
+            <option>初二</option>
+            <option>初三</option>
+            <option>高一</option>
+            <option>高二</option>
+            <option>高三</option>
+            <option>大一</option>
+            <option>大二</option>
+            <option>大三</option>
+            <option>大四</option>
+            <option>研一</option>
+            <option>研二</option>
+            <option>研三</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>身份证号码</label>
+          <input type="text" id="idCard" placeholder="请输入18位身份证号码" maxlength="18">
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;">仅用于身份核验，加密存储</div>
+        </div>
+      </div>
+
+      <!-- 组委额外信息：仅需填写邀请码 -->
+      <div class="extra-fields" id="organizerFields">
+        <div class="section-label">组委信息</div>
+        <div class="form-group">
+          <label>邀请码</label>
+          <input type="text" id="inviteCode" placeholder="请输入组委邀请码">
+        </div>
+      </div>
+
+      <button class="btn-primary" id="regBtn" onclick="handleRegister()">提 交 注 册</button>
     </div>
 
-    <div class="modal" id="sendNotificationModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="hideModal('sendNotificationModal')">&times;</button>
-            <h2>发送通知</h2>
-            <input type="hidden" id="targetUserId">
-            <div class="form-group">
-                <label>通知标题</label>
-                <input type="text" id="notificationTitle" placeholder="请输入通知标题">
-            </div>
-            <div class="form-group">
-                <label>通知内容</label>
-                <textarea id="notificationContent" rows="5" placeholder="请输入通知内容"></textarea>
-            </div>
-            <button class="btn btn-primary" onclick="sendNotification()">发送通知</button>
+    <!-- PARTICIPANT DASHBOARD -->
+    <div class="dashboard" id="dash-participant">
+      <div class="dash-header">
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">欢迎回来</div>
+          <div class="dash-title" id="dash-p-name">张同学</div>
         </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <span class="dash-role-badge">参赛选手</span>
+          <button class="logout-btn" onclick="logout()">退出登录</button>
+        </div>
+      </div>
+
+      <div class="exam-card">
+        <div class="exam-card-label">笔试链接</div>
+        <div style="font-size:14px;color:var(--ink);margin-bottom:4px;">您的专属考试链接已就绪</div>
+        <div style="font-size:12px;color:var(--muted);">考试时间：2025年4月10日 09:00–11:00</div>
+        <div class="exam-link-box">
+          <span class="exam-link-text" id="examLink">https://exam.competition.edu.cn/p/a3f9e2d8</span>
+          <button class="copy-btn" onclick="copyLink()">复制链接</button>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-item-value" id="dash-p-grade">大三</div>
+          <div class="info-item-label">年级</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-value" id="dash-p-status" style="color:var(--gold);">已确认</div>
+          <div class="info-item-label">报名状态</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-value" id="dash-p-regnumber">A-0042</div>
+          <div class="info-item-label">参赛编号</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-value" id="dash-p-school">清华大学</div>
+          <div class="info-item-label">所在学校</div>
+        </div>
+      </div>
     </div>
 
-    <div class="modal" id="addExamLinkModal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="hideModal('addExamLinkModal')">&times;</button>
-            <h2>添加笔试链接</h2>
-            <input type="hidden" id="examLinkId">
-            <div class="form-group">
-                <label>链接标题</label>
-                <input type="text" id="examLinkTitle" placeholder="请输入链接标题">
-            </div>
-            <div class="form-group">
-                <label>链接地址</label>
-                <input type="text" id="examLinkUrl" placeholder="请输入链接地址">
-            </div>
-            <button class="btn btn-primary" onclick="saveExamLink()" style="width: 100%;">保存</button>
+    <!-- ORGANIZER DASHBOARD -->
+    <div class="dashboard" id="dash-organizer">
+      <div class="dash-header">
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">管理后台</div>
+          <div class="dash-title" id="dash-o-name">李管理员</div>
         </div>
-    </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <span class="dash-role-badge">组委会</span>
+          <button class="logout-btn" onclick="logout()">退出登录</button>
+        </div>
+      </div>
 
-    <script>
-        let currentUser = null;
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num">127</div>
+          <div class="stat-lbl">已报名</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="color:var(--gold);">89</div>
+          <div class="stat-lbl">已确认</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="color:var(--red);">38</div>
+          <div class="stat-lbl">待审核</div>
+        </div>
+      </div>
 
-        async function checkSession() {
-            const res = await fetch('/api/session');
-            const data = await res.json();
-            if (data.loggedIn) {
-                currentUser = data.user;
-                updateUI();
-            }
-        }
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="搜索姓名、学校、编号…" oninput="filterTable()">
+        <button onclick="filterTable()">搜索</button>
+      </div>
 
-        function updateUI() {
-            const loginBtn = document.getElementById('loginBtn');
-            const welcomeText = document.getElementById('welcomeText');
-            const homeCard = document.getElementById('homeCard');
-            const participantDashboard = document.getElementById('participantDashboard');
-            const adminDashboard = document.getElementById('adminDashboard');
+      <div class="table-wrap">
+        <table id="participantTable">
+          <thead>
+            <tr>
+              <th>编号</th>
+              <th>姓名</th>
+              <th>学校</th>
+              <th>类别</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+        </div>
+      </div>
 
-            if (currentUser) {
-                loginBtn.textContent = '退出';
-                loginBtn.onclick = logout;
-                welcomeText.textContent = `欢迎，${currentUser.username}`;
-                homeCard.style.display = 'none';
-                
-                if (currentUser.role === '选手') {
-                    participantDashboard.style.display = 'block';
-                    adminDashboard.style.display = 'none';
-                    loadExamLinks();
-                    loadNotifications();
-                } else {
-                    participantDashboard.style.display = 'none';
-                    adminDashboard.style.display = 'block';
-                    loadParticipants();
-                    loadExamLinksAdmin();
-                }
-            } else {
-                loginBtn.textContent = '登录';
-                loginBtn.onclick = () => showModal('loginModal');
-                welcomeText.textContent = '';
-                homeCard.style.display = 'block';
-                participantDashboard.style.display = 'none';
-                adminDashboard.style.display = 'none';
-            }
-        }
+      <div class="footer">© xintx · 技术支持</div>
+    </div><!-- /.app -->
+  </div><!-- /#modal-card -->
+</div><!-- /#modal-overlay -->
 
-        async function loadExamLinks() {
-            const res = await fetch('/api/exam-links');
-            const links = await res.json();
-            const container = document.getElementById('examLinks');
-            if (links.length === 0) {
-                container.innerHTML = '<p style="color: #666; text-align: center; padding: 30px;">暂无可用的笔试链接</p>';
-            } else {
-                container.innerHTML = links.map(link => `
-                    <div class="exam-link-card">
-                        <h3>${link.title}</h3>
-                        <a href="${link.url}" target="_blank" rel="noopener">点击进入笔试</a>
-                        <p style="font-size: 13px; opacity: 0.8; margin-top: 10px;">链接创建时间: ${new Date(link.created_at).toLocaleString()}</p>
-                    </div>
-                `).join('');
-            }
-        }
+<script>
+  // ── 配置 ──────────────────────────────────────────
+  const API = 'http://localhost:8000';
 
-        async function loadNotifications() {
-            const res = await fetch('/api/notifications');
-            const notifications = await res.json();
-            const container = document.getElementById('notificationList');
-            if (notifications.length === 0) {
-                container.innerHTML = '<p style="color: #666; text-align: center; padding: 30px;">暂无通知消息</p>';
-            } else {
-                container.innerHTML = notifications.map(n => `
-                    <div class="notification-item ${n.read === 0 ? 'unread' : ''}" onclick="markNotificationRead(${n.id})">
-                        <div class="notification-title">${n.title}</div>
-                        <div class="notification-content">${n.content}</div>
-                        <div class="notification-time">${new Date(n.created_at).toLocaleString()}</div>
-                    </div>
-                `).join('');
-            }
-        }
+  // ── 状态 ──────────────────────────────────────────
+  let loginRole = 'participant';
+  let regRole   = 'participant';
+  let authToken = localStorage.getItem('token') || null;
 
-        async function markNotificationRead(id) {
-            await fetch('/api/mark-notification-read', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ notificationId: id })
-            });
-            loadNotifications();
-        }
+  // ── 弹窗控制 ──────────────────────────────────────
+  // 打开弹窗：背景变暗模糊，弹窗从下方滑入，并切换到指定标签
+  function openModal(tab = 'login') {
+    document.getElementById('landing').classList.add('dimmed');
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden'; // 防止背景滚动
+    showPanel(tab);
+    hideNotification();
+  }
 
-        async function loadParticipants() {
-            const res = await fetch('/api/admin/participants');
-            const participants = await res.json();
-            const stats = document.getElementById('participantStats');
-            stats.innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${participants.length}</div>
-                    <div class="stat-label">总选手数</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${participants.filter(p => p.unread_count > 0).length}</div>
-                    <div class="stat-label">待读通知</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${participants.length}</div>
-                    <div class="stat-label">已注册</div>
-                </div>
-            `;
-            const table = document.getElementById('participantsTable');
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>用户名</th>
-                        <th>姓名</th>
-                        <th>学校</th>
-                        <th>手机号</th>
-                        <th>邮箱</th>
-                        <th>注册时间</th>
-                        <th>待读通知</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${participants.map(p => `
-                        <tr>
-                            <td>${p.id}</td>
-                            <td>${p.username}</td>
-                            <td>${p.name || '-'}</td>
-                            <td>${p.school || '-'}</td>
-                            <td>${p.phone || '-'}</td>
-                            <td>${p.email || '-'}</td>
-                            <td>${new Date(p.created_at).toLocaleString()}</td>
-                            <td>${p.unread_count || 0}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" onclick="openSendNotificationModal(${p.id}, '${p.username}')">发送通知</button>
-                            </td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            `;
-        }
+  // 关闭弹窗：恢复背景，弹窗收起（仪表盘状态下不关闭，保持登录状态）
+  function closeModal() {
+    // 若处于仪表盘（已登录），弹窗不关闭，背景保持变暗
+    const anyDash = document.querySelector('.dashboard.show');
+    if (anyDash) return;
+    document.getElementById('landing').classList.remove('dimmed');
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
 
-        async function loadExamLinksAdmin() {
-            const res = await fetch('/api/admin/exam-links');
-            const links = await res.json();
-            const table = document.getElementById('examLinksTable');
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>标题</th>
-                        <th>链接</th>
-                        <th>状态</th>
-                        <th>创建时间</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${links.map(link => `
-                        <tr>
-                            <td>${link.id}</td>
-                            <td>${link.title}</td>
-                            <td><a href="${link.url}" target="_blank" style="color: #667eea;">点击访问</a></td>
-                            <td>${link.active === 1 ? '启用' : '禁用'}</td>
-                            <td>${new Date(link.created_at).toLocaleString()}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" onclick="editExamLink(${link.id})">编辑</button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteExamLink(${link.id})">删除</button>
-                            </td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            `;
-        }
+  // 点击弹窗遮罩空白区域时关闭（点到卡片内部不关闭）
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
 
-        function showParticipantTab(tab) {
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('examTab').style.display = tab === 'exam' ? 'block' : 'none';
-            document.getElementById('notificationsTab').style.display = tab === 'notifications' ? 'block' : 'none';
-            if (tab === 'notifications') loadNotifications();
-        }
+  // ESC 键关闭弹窗
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-        function showAdminTab(tab) {
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('participantsTab').style.display = tab === 'participants' ? 'block' : 'none';
-            document.getElementById('examTabAdmin').style.display = tab === 'exam' ? 'block' : 'none';
-            document.getElementById('broadcastTab').style.display = tab === 'broadcast' ? 'block' : 'none';
-            if (tab === 'exam') loadExamLinksAdmin();
-        }
+  // ── 通用请求封装 ──────────────────────────────────
+  async function api(method, path, body = null, auth = false) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (auth && authToken) headers['Authorization'] = `Bearer ${authToken}`;
+    const res = await fetch(API + path, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || `请求失败 (${res.status})`);
+    return data;
+  }
 
-        function showAddExamLinkModal() {
-            document.getElementById('examLinkId').value = '';
-            document.getElementById('examLinkTitle').value = '';
-            document.getElementById('examLinkUrl').value = '';
-            showModal('addExamLinkModal');
-        }
+  // ── UI 工具 ───────────────────────────────────────
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.textContent = loading ? '请稍候…' : btn.dataset.label;
+  }
 
-        function editExamLink(id) {
-            fetch(`/api/admin/exam-links/${id}`)
-            .then(res => res.json())
-            .then(link => {
-                document.getElementById('examLinkId').value = link.id;
-                document.getElementById('examLinkTitle').value = link.title;
-                document.getElementById('examLinkUrl').value = link.url;
-                showModal('addExamLinkModal');
-            });
-        }
+  function showNotification(msg, type) {
+    const n = document.getElementById('notification');
+    n.textContent = msg;
+    n.className = 'notification ' + type + ' show';
+    n.style.display = 'block';
+    n.style.margin = '0 32px 0 32px';
+    clearTimeout(n._timer);
+    n._timer = setTimeout(() => hideNotification(), 6000);
+  }
 
-        async function saveExamLink() {
-            const id = document.getElementById('examLinkId').value;
-            const title = document.getElementById('examLinkTitle').value;
-            const url = document.getElementById('examLinkUrl').value;
-            if (!title || !url) {
-                showMessage('请填写所有字段', 'error');
-                return;
-            }
-            if (id) {
-                await fetch(`/api/admin/exam-links/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, url, active: 1 })
-                });
-                showMessage('链接更新成功', 'success');
-            } else {
-                await fetch('/api/admin/exam-links', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, url })
-                });
-                showMessage('链接添加成功', 'success');
-            }
-            hideModal('addExamLinkModal');
-            loadExamLinksAdmin();
-        }
+  function hideNotification() {
+    const n = document.getElementById('notification');
+    n.classList.remove('show');
+    n.style.display = 'none';
+  }
 
-        async function deleteExamLink(id) {
-            if (!confirm('确定要删除这个链接吗？')) return;
-            await fetch(`/api/admin/exam-links/${id}`, { method: 'DELETE' });
-            showMessage('链接删除成功', 'success');
-            loadExamLinksAdmin();
-        }
+  // 切换到指定 panel（login / register / forgot）
+  function showPanel(name) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', name === 'login' ? i === 0 : name === 'register' ? i === 1 : false);
+    });
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('panel-' + name);
+    if (target) target.classList.add('active');
+    hideNotification();
+  }
 
-        function openSendNotificationModal(userId, username) {
-            document.getElementById('targetUserId').value = userId;
-            document.getElementById('notificationTitle').value = '';
-            document.getElementById('notificationContent').value = '';
-            showModal('sendNotificationModal');
-        }
+  function switchTab(tab) { showPanel(tab); }
 
-        async function sendNotification() {
-            const userId = document.getElementById('targetUserId').value;
-            const title = document.getElementById('notificationTitle').value;
-            const content = document.getElementById('notificationContent').value;
-            if (!title || !content) {
-                showMessage('请填写所有字段', 'error');
-                return;
-            }
-            const res = await fetch('/api/admin/send-notification', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, title, content })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showMessage(data.message, 'success');
-                hideModal('sendNotificationModal');
-                loadParticipants();
-            } else {
-                showMessage(data.error, 'error');
-            }
-        }
+  // 登录页身份选择：记录当前选择的角色，并更新卡片的选中高亮状态
+  function selectLoginRole(el, role) {
+    loginRole = role;
+    el.closest('.role-selector').querySelectorAll('.role-card')
+      .forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
 
-        async function sendBroadcast() {
-            const title = document.getElementById('broadcastTitle').value;
-            const content = document.getElementById('broadcastContent').value;
-            if (!title || !content) {
-                showMessage('请填写所有字段', 'error');
-                return;
-            }
-            const res = await fetch('/api/admin/broadcast-notification', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, content })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showMessage(data.message, 'success');
-                document.getElementById('broadcastTitle').value = '';
-                document.getElementById('broadcastContent').value = '';
-                loadParticipants();
-            } else {
-                showMessage(data.error, 'error');
-            }
-        }
+  function selectRegRole(el, role) {
+    regRole = role;
+    el.closest('.role-selector').querySelectorAll('.role-card')
+      .forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('participantFields').classList.toggle('show', role === 'participant');
+    document.getElementById('organizerFields').classList.toggle('show', role === 'organizer');
+  }
 
-        async function register() {
-            const username = document.getElementById('regUsername').value;
-            const password = document.getElementById('regPassword').value;
-            const role = document.getElementById('regRole').value;
-            const name = document.getElementById('regName').value;
-            const school = document.getElementById('regSchool').value;
-            const phone = document.getElementById('regPhone').value;
-            const email = document.getElementById('regEmail').value;
+  function showDashboard(role) {
+    // 登录成功后：隐藏标签栏和表单面板，显示仪表盘
+    // 弹窗保持打开，背景继续变暗，隐藏关闭按钮（防止误关）
+    document.querySelector('.tabs').style.display = 'none';
+    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+    document.getElementById('modal-close').style.display = 'none';
+    hideNotification();
+    document.getElementById('dash-' + role).classList.add('show');
+  }
 
-            if (!username || !password) {
-                showMessage('请填写用户名和密码', 'error');
-                return;
-            }
+  // ── 身份证格式校验 ────────────────────────────────
+  function validateIdCard(id) {
+    return /^\d{17}[\dXx]$/.test(id);
+  }
 
-            const res = await fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, role, name, school, phone, email })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showMessage('注册成功，请登录', 'success');
-                hideModal('registerModal');
-                clearRegisterForm();
-            } else {
-                showMessage(data.error, 'error');
-            }
-        }
+  // 密码显示控制：支持点击锁定显示 + 悬停临时预览两种方式
+  // locked 状态表示用户已点击切换，此时悬停不再干预
+  const pwdState = {}; // 每个密码框独立维护 { locked: bool }
 
-        async function login() {
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
+  function initPwd(id) {
+    if (!pwdState[id]) pwdState[id] = { locked: false };
+  }
 
-            if (!username || !password) {
-                showMessage('请填写用户名和密码', 'error');
-                return;
-            }
+  // 鼠标移入：未锁定时临时显示密码
+  function showPwd(id) {
+    initPwd(id);
+    if (!pwdState[id].locked) document.getElementById(id).type = 'text';
+  }
 
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            const data = await res.json();
-            if (data.success) {
-                currentUser = data.user;
-                showMessage('登录成功', 'success');
-                hideModal('loginModal');
-                clearLoginForm();
-                updateUI();
-            } else {
-                showMessage(data.error, 'error');
-            }
-        }
+  // 鼠标移出：未锁定时恢复隐藏
+  function hidePwd(id) {
+    initPwd(id);
+    if (!pwdState[id].locked) document.getElementById(id).type = 'password';
+  }
 
-        async function logout() {
-            await fetch('/api/logout', { method: 'POST' });
-            currentUser = null;
-            showMessage('已退出登录', 'success');
-            updateUI();
-        }
+  // 点击切换：锁定/解锁显示状态，并同步更新图标和容器样式
+  function togglePwd(id, btn) {
+    initPwd(id);
+    const input = document.getElementById(id);
+    pwdState[id].locked = !pwdState[id].locked;
+    input.type = pwdState[id].locked ? 'text' : 'password';
+    // 锁定时给容器加 .locked，确保鼠标移开后眼睛仍然可见
+    btn.closest('.pwd-wrap').classList.toggle('locked', pwdState[id].locked);
+    const eyeOpen = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    const eyeOff  = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+    btn.innerHTML = pwdState[id].locked ? eyeOff : eyeOpen;
+  }
 
-        function showModal(id) {
-            document.getElementById(id).classList.add('show');
-        }
+  // ── 注册 ──────────────────────────────────────────
+  async function handleRegister() {
+    const name  = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pwd   = document.getElementById('regPwd').value;
 
-        function hideModal(id) {
-            document.getElementById(id).classList.remove('show');
-        }
+    if (!name || !email || !pwd) { showNotification('请填写所有必填信息', 'error'); return; }
+    if (pwd.length < 6) { showNotification('密码至少6位', 'error'); return; }
 
-        function clearLoginForm() {
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-        }
-
-        function clearRegisterForm() {
-            document.getElementById('regUsername').value = '';
-            document.getElementById('regPassword').value = '';
-            document.getElementById('regRole').value = '选手';
-            document.getElementById('regName').value = '';
-            document.getElementById('regSchool').value = '';
-            document.getElementById('regPhone').value = '';
-            document.getElementById('regEmail').value = '';
-        }
-
-        function showMessage(text, type) {
-            const box = document.getElementById('messageBox');
-            box.innerHTML = `<div class="message ${type}">${text}</div>`;
-            setTimeout(() => box.innerHTML = '', 3500);
-        }
-
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) hideModal(modal.id);
-            });
+    try {
+      setLoading('regBtn', true);
+      if (regRole === 'participant') {
+        const school = document.getElementById('school').value.trim();
+        const grade  = document.getElementById('grade').value;
+        const idCard = document.getElementById('idCard').value.trim();
+        if (!school)               { showNotification('请填写学校名称', 'error'); return; }
+        if (!grade)                { showNotification('请选择年级', 'error'); return; }
+        if (!validateIdCard(idCard)) { showNotification('请输入正确的18位身份证号码', 'error'); return; }
+        const res = await api('POST', '/auth/register/participant', {
+          email, name, password: pwd, school, grade, id_card: idCard
         });
+        showNotification(`注册成功！确认邮件已发送至 ${email}，您的参赛编号：${res.reg_number}`, 'success');
+      } else {
+        const invite_code = document.getElementById('inviteCode').value.trim();
+        if (!invite_code) { showNotification('请填写邀请码', 'error'); return; }
+        await api('POST', '/auth/register/organizer', {
+          email, name, password: pwd, invite_code
+        });
+        showNotification('注册成功！确认邮件已发送至 ' + email, 'success');
+      }
+      setTimeout(() => showPanel('login'), 2500);
+    } catch (e) {
+      showNotification(e.message, 'error');
+    } finally {
+      setLoading('regBtn', false);
+    }
+  }
 
-        checkSession();
-    </script>
+  // ── 登录（姓名 + 密码）────────────────────────────
+  async function handleLogin() {
+    const name = document.getElementById('loginName').value.trim();
+    const pwd  = document.getElementById('loginPwd').value;
+    if (!name || !pwd) { showNotification('请填写姓名和密码', 'error'); return; }
+
+    try {
+      setLoading('loginBtn', true);
+      // FastAPI OAuth2 标准要求用 application/x-www-form-urlencoded 格式，
+      // 并将用户名放在 username 字段；此处用真实姓名作为登录凭据
+      const res = await fetch(API + '/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username: name, password: pwd }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || '登录失败');
+
+      if (data.role !== loginRole) {
+        throw new Error('身份与账号类型不符，请选择正确的登录身份');
+      }
+
+      authToken = data.access_token;
+      localStorage.setItem('token', authToken);
+      showDashboard(data.role);
+
+      if (data.role === 'participant') {
+        await loadParticipantDash(data.name);
+      } else {
+        await loadOrganizerDash(data.name);
+      }
+    } catch (e) {
+      showNotification(e.message, 'error');
+    } finally {
+      setLoading('loginBtn', false);
+    }
+  }
+
+  // ── 忘记密码 ──────────────────────────────────────
+  async function handleForgot() {
+    const name  = document.getElementById('forgotName').value.trim();
+    const email = document.getElementById('forgotEmail').value.trim();
+    if (!name || !email) { showNotification('请填写姓名和邮箱', 'error'); return; }
+
+    try {
+      setLoading('forgotBtn', true);
+      await api('POST', '/auth/forgot-password', { name, email });
+      showNotification('重置邮件已发送，请查收邮箱并按提示操作（有效期30分钟）', 'success');
+      document.getElementById('forgotName').value = '';
+      document.getElementById('forgotEmail').value = '';
+    } catch (e) {
+      showNotification(e.message, 'error');
+    } finally {
+      setLoading('forgotBtn', false);
+    }
+  }
+
+  // ── 选手仪表盘 ────────────────────────────────────
+  async function loadParticipantDash(name) {
+    document.getElementById('dash-p-name').textContent = name;
+    try {
+      const info = await api('GET', '/participant/me', null, true);
+      document.getElementById('dash-p-name').textContent    = info.name;
+      document.getElementById('examLink').textContent       = info.exam_url;
+      document.getElementById('dash-p-grade').textContent   = info.grade || '—';
+      document.getElementById('dash-p-regnumber').textContent = info.reg_number;
+      document.getElementById('dash-p-school').textContent  = info.school;
+      const statusEl = document.getElementById('dash-p-status');
+      const statusMap = { pending: '待审核', confirmed: '已确认', rejected: '未通过' };
+      statusEl.textContent   = statusMap[info.status] || info.status;
+      statusEl.style.color   = info.status === 'confirmed' ? 'var(--gold)'
+                             : info.status === 'rejected'  ? 'var(--red)' : 'var(--ink)';
+    } catch (e) {
+      showNotification('获取信息失败：' + e.message, 'error');
+    }
+  }
+
+  // ── 组委仪表盘 ────────────────────────────────────
+  async function loadOrganizerDash(name) {
+    document.getElementById('dash-o-name').textContent = name;
+    try {
+      const stats = await api('GET', '/admin/stats', null, true);
+      const nums  = document.querySelectorAll('#dash-organizer .stat-num');
+      if (nums[0]) nums[0].textContent = stats.total;
+      if (nums[1]) nums[1].textContent = stats.confirmed;
+      if (nums[2]) nums[2].textContent = stats.pending;
+    } catch(e) {}
+    await fetchAndRenderTable();
+  }
+
+  async function fetchAndRenderTable(search = '') {
+    try {
+      const url = '/admin/participants' + (search ? `?search=${encodeURIComponent(search)}` : '');
+      renderTable(await api('GET', url, null, true));
+    } catch (e) {
+      showNotification('获取选手列表失败：' + e.message, 'error');
+    }
+  }
+
+  async function filterTable() {
+    await fetchAndRenderTable(document.getElementById('searchInput').value.trim());
+  }
+
+  function renderTable(data) {
+    const statusMap   = { pending: '待审核', confirmed: '已确认', rejected: '未通过' };
+    const statusClass = { pending: 'pending', confirmed: 'done', rejected: 'pending' };
+    document.getElementById('tableBody').innerHTML = data.map(p => `
+      <tr>
+        <td>${p.reg_number}</td>
+        <td>${p.name}</td>
+        <td>${p.school}</td>
+        <td>${p.grade || '—'}</td>
+        <td><span class="status-badge ${statusClass[p.status]}">${statusMap[p.status] || p.status}</span></td>
+        <td>
+          <button onclick="updateStatus('${p.reg_number}','confirmed')"
+            style="font-size:11px;padding:3px 8px;background:var(--ink);color:var(--cream);border:none;cursor:pointer;margin-right:4px;">确认</button>
+          <button onclick="updateStatus('${p.reg_number}','rejected')"
+            style="font-size:11px;padding:3px 8px;background:var(--red);color:#fff;border:none;cursor:pointer;">拒绝</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">暂无数据</td></tr>';
+  }
+
+  async function updateStatus(regNumber, status) {
+    try {
+      await api('PATCH', `/admin/participants/${regNumber}/status`, { status }, true);
+      showNotification('状态已更新', 'success');
+      await fetchAndRenderTable(document.getElementById('searchInput').value.trim());
+      const stats = await api('GET', '/admin/stats', null, true);
+      const nums  = document.querySelectorAll('#dash-organizer .stat-num');
+      if (nums[0]) nums[0].textContent = stats.total;
+      if (nums[1]) nums[1].textContent = stats.confirmed;
+      if (nums[2]) nums[2].textContent = stats.pending;
+    } catch (e) {
+      showNotification('更新失败：' + e.message, 'error');
+    }
+  }
+
+  // ── 复制链接 ──────────────────────────────────────
+  function copyLink() {
+    navigator.clipboard.writeText(document.getElementById('examLink').textContent)
+      .then(() => showNotification('链接已复制', 'success'));
+  }
+
+  // ── 退出登录 ──────────────────────────────────────
+  async function logout() {
+    try { await api('POST', '/auth/logout', null, true); } catch(e) {}
+    authToken = null;
+    localStorage.removeItem('token');
+    // 恢复标签栏、面板，隐藏仪表盘
+    document.querySelector('.tabs').style.display = 'flex';
+    document.querySelectorAll('.panel').forEach(p => { p.style.display = ''; p.classList.remove('active'); });
+    document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('show'));
+    document.getElementById('panel-login').classList.add('active');
+    document.getElementById('modal-close').style.display = '';
+    document.getElementById('loginName').value = '';
+    document.getElementById('loginPwd').value  = '';
+    // 关闭弹窗，回到落地页
+    document.getElementById('landing').classList.remove('dimmed');
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // 页面加载完成后，将每个主按钮的原始文字存入 data-label 属性，
+  // 以便按钮进入 loading 状态（显示"请稍候…"）后能正确恢复原文字
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.btn-primary').forEach(btn => {
+      btn.dataset.label = btn.textContent;
+    });
+  });
+</script>
 </body>
 </html>
