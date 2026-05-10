@@ -416,7 +416,7 @@
     letter-spacing: 0.5px;
   }
 
-  input, select {
+  input:not([type="checkbox"]), select {
     width: 100%;
     padding: 11px 14px;
     border: 1.5px solid var(--cream-dark);
@@ -430,8 +430,17 @@
     appearance: none;
   }
 
-  input:focus, select:focus { border-color: var(--gold); }
-  input::placeholder { color: #bbb; }
+  /* checkbox 单独样式：恢复原生外观，加金色选中色 */
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--ink);
+    flex-shrink: 0;
+  }
+
+  input:not([type="checkbox"]):focus, select:focus { border-color: var(--gold); }
+  input:not([type="checkbox"])::placeholder { color: #bbb; }
 
   /* 密码输入框容器：相对定位，使眼睛图标能绝对定位到右侧 */
   .pwd-wrap { position: relative; }
@@ -727,6 +736,22 @@
     to { opacity: 1; }
   }
 
+  textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--cream-dark);
+    background: var(--white);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.2s;
+    line-height: 1.7;
+  }
+  textarea:focus { border-color: var(--gold); }
+  textarea::placeholder { color: #bbb; }
+
   /* 页脚：在弹窗内底部显示 */
   .footer {
     text-align: center;
@@ -904,12 +929,12 @@
       <button class="btn-primary" id="regBtn" onclick="handleRegister()">提 交 注 册</button>
     </div>
 
-    <!-- PARTICIPANT DASHBOARD -->
+    <!-- 选手仪表盘：笔试表单 -->
     <div class="dashboard" id="dash-participant">
       <div class="dash-header">
         <div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">欢迎回来</div>
-          <div class="dash-title" id="dash-p-name">张同学</div>
+          <div class="dash-title" id="dash-p-name">选手</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
           <span class="dash-role-badge">参赛选手</span>
@@ -917,32 +942,241 @@
         </div>
       </div>
 
-      <div class="exam-card">
-        <div class="exam-card-label">笔试链接</div>
-        <div style="font-size:14px;color:var(--ink);margin-bottom:4px;">您的专属考试链接已就绪</div>
-        <div style="font-size:12px;color:var(--muted);">考试时间：2025年4月10日 09:00–11:00</div>
-        <div class="exam-link-box">
-          <span class="exam-link-text" id="examLink">https://exam.competition.edu.cn/p/a3f9e2d8</span>
-          <button class="copy-btn" onclick="copyLink()">复制链接</button>
-        </div>
-      </div>
+      <!-- 笔试表单 -->
+      <div style="padding:0 32px 32px;">
 
-      <div class="info-grid">
-        <div class="info-item">
-          <div class="info-item-value" id="dash-p-grade">大三</div>
-          <div class="info-item-label">年级</div>
+        <!-- 个人信息 -->
+        <div class="section-label" style="margin-bottom:16px;">个人信息</div>
+
+        <div class="form-group">
+          <label>姓名</label>
+          <input type="text" id="ex-name" placeholder="请输入姓名">
         </div>
-        <div class="info-item">
-          <div class="info-item-value" id="dash-p-status" style="color:var(--gold);">已确认</div>
-          <div class="info-item-label">报名状态</div>
+        <div class="form-group">
+          <label>性别</label>
+          <select id="ex-gender">
+            <option value="">请选择</option>
+            <option>男</option>
+            <option>女</option>
+            <option>其他</option>
+          </select>
         </div>
-        <div class="info-item">
-          <div class="info-item-value" id="dash-p-regnumber">A-0042</div>
-          <div class="info-item-label">参赛编号</div>
+        <div class="form-group">
+          <label>年龄</label>
+          <input type="number" id="ex-age" placeholder="请输入年龄" min="1" max="99" oninput="checkMinor()">
         </div>
-        <div class="info-item">
-          <div class="info-item-value" id="dash-p-school">清华大学</div>
-          <div class="info-item-label">所在学校</div>
+        <div class="form-group">
+          <label>出生日期</label>
+          <div style="display:flex;gap:8px;">
+            <select id="ex-birth-month" style="flex:1;" onchange="updateDays()">
+              <option value="">月</option>
+              <option value="1">1月</option><option value="2">2月</option>
+              <option value="3">3月</option><option value="4">4月</option>
+              <option value="5">5月</option><option value="6">6月</option>
+              <option value="7">7月</option><option value="8">8月</option>
+              <option value="9">9月</option><option value="10">10月</option>
+              <option value="11">11月</option><option value="12">12月</option>
+            </select>
+            <select id="ex-birth-day" style="flex:1;">
+              <option value="">日</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>学校</label>
+          <input type="text" id="ex-school" placeholder="请输入学校全称">
+        </div>
+        <div class="form-group">
+          <label>年级</label>
+          <select id="ex-grade">
+            <option value="">请选择年级</option>
+            <option>初一</option><option>初二</option><option>初三</option>
+            <option>高一</option><option>高二</option><option>高三</option>
+            <option>大一</option><option>大二</option><option>大三</option><option>大四</option>
+            <option>研一</option><option>研二</option><option>研三</option>
+            <option>其他</option>
+          </select>
+        </div>
+
+        <!-- 电话（未成年额外要求家长电话） -->
+        <div class="form-group">
+          <label>本人电话</label>
+          <input type="tel" id="ex-phone" placeholder="请输入本人手机号" oninput="checkMinor()">
+        </div>
+        <div class="form-group" id="ex-parent-group" style="display:none;">
+          <label>家长电话 <span style="color:var(--red);font-size:11px;">（未成年必填）</span></label>
+          <input type="tel" id="ex-parent-phone" placeholder="请输入家长手机号">
+        </div>
+
+        <div class="section-label" style="margin:20px 0 16px;">紧急联系人</div>
+        <div class="form-group">
+          <label>紧急联系人姓名</label>
+          <input type="text" id="ex-emergency-name" placeholder="请输入紧急联系人姓名">
+        </div>
+        <div class="form-group">
+          <label>与本人关系</label>
+          <select id="ex-emergency-rel">
+            <option value="">请选择</option>
+            <option>父母</option><option>兄弟姐妹</option><option>祖父母/外祖父母</option>
+            <option>亲属</option><option>朋友</option><option>老师</option><option>其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>紧急联系人电话</label>
+          <input type="tel" id="ex-emergency-phone" placeholder="请输入紧急联系人手机号">
+        </div>
+
+        <div class="section-label" style="margin:20px 0 16px;">联系方式</div>
+        <div class="form-group">
+          <label>QQ 号</label>
+          <input type="text" id="ex-qq" placeholder="请输入 QQ 号">
+        </div>
+        <div class="form-group">
+          <label>微信号</label>
+          <input type="text" id="ex-wechat" placeholder="请输入微信号">
+        </div>
+        <div class="form-group">
+          <label>电子邮箱</label>
+          <input type="email" id="ex-email" placeholder="请输入常用邮箱地址">
+        </div>
+        <div class="form-group">
+          <label>身份证号</label>
+          <input type="text" id="ex-idcard" placeholder="请输入18位身份证号码" maxlength="18">
+        </div>
+        <div class="form-group">
+          <label>是否参加过 ayes</label>
+          <select id="ex-prev">
+            <option value="">请选择</option>
+            <option>是</option>
+            <option>否</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>忌口</label>
+          <input type="text" id="ex-diet" placeholder="如无请填&ldquo;无&rdquo;">
+        </div>
+        <div class="form-group">
+          <label>上衣尺码</label>
+          <select id="ex-size">
+            <option value="">请选择</option>
+            <option>XS</option><option>S</option><option>M</option>
+            <option>L</option><option>XL</option><option>XXL</option><option>XXXL</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>致敏原</label>
+          <input type="text" id="ex-allergy" placeholder="如无请填&ldquo;无&rdquo;">
+        </div>
+        <div class="form-group">
+          <label>有无心脏病等病史</label>
+          <select id="ex-medical">
+            <option value="">请选择</option>
+            <option>无</option>
+            <option>有（请在备注中说明）</option>
+          </select>
+        </div>
+
+        <!-- 老带新 -->
+        <div class="form-group">
+          <label>是否参与"老带新"优惠</label>
+          <select id="ex-referral" onchange="toggleReferral()">
+            <option value="">请选择</option>
+            <option>我是老选手</option>
+            <option>我是新选手</option>
+          </select>
+        </div>
+        <div id="ex-referral-detail" style="display:none;">
+          <div class="form-group">
+            <label>介绍人姓名及与你的关系</label>
+            <input type="text" id="ex-referral-info" placeholder="例：张三，同学">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>希望与谁组队？</label>
+          <input type="text" id="ex-teammate" placeholder="请输入想组队人的姓名；如无请填&ldquo;无&rdquo;">
+        </div>
+
+        <!-- 问答 -->
+        <div class="section-label" style="margin:24px 0 16px;">问答</div>
+
+        <div class="form-group">
+          <label>1. 提到"光影"，你最先想到什么场景？</label>
+          <textarea id="ex-q1" rows="3" placeholder="请在此作答…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>2. 如果把每个人比作一束光，你认为你会是一束怎样的光？请简要描述。</label>
+          <textarea id="ex-q2" rows="3" placeholder="请在此作答…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>3. 在旅游中你更倾向于"特种兵式旅游"还是按照自己的习惯慢慢体验？</label>
+          <textarea id="ex-q3" rows="3" placeholder="请在此作答…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>4. 你认为在团队合作中什么最重要？请简要说明。</label>
+          <textarea id="ex-q4" rows="3" placeholder="请在此作答…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>5. 你会使用 AI 辅助你做什么？你希望可以学习哪类 AI 在什么方面的应用？</label>
+          <textarea id="ex-q5" rows="3" placeholder="请在此作答…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>6. 你怎样理解 AI 的"学习"与人的"学习"？</label>
+          <textarea id="ex-q6" rows="3" placeholder="请在此作答…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>7. 本次峰会关注 AI 如何赋能教育、文娱、城市公共福祉及产业等领域。请观察你的校园生活或社会现象，描述一个你认为切实存在的"痛点"（即大家觉得不方便、需要改进的问题），并设想一下，你会如何利用 AI 技术来解决这个问题？</label>
+          <textarea id="ex-q7" rows="5" placeholder="请在此作答…"></textarea>
+        </div>
+
+        <!-- 自评与描述 -->
+        <div class="section-label" style="margin:24px 0 16px;">自评与描述</div>
+
+        <div class="form-group">
+          <label>1. 请介绍一下你自己。</label>
+          <textarea id="ex-q8-intro" rows="4" placeholder="请在此作答…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>2. 编程基础描述</label>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.7;">你是否具备一定的编程基础（如 Python、C++、Java 等）？如果有，请简要描述你的掌握程度或曾经做过的项目 / 参加过的比赛（如信息学奥赛、机器人比赛等）。</div>
+          <textarea id="ex-q8" rows="4" placeholder="请在此作答…"></textarea>
+        </div>
+        <div class="form-group">
+          <label>3. AI 工具使用经验</label>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.7;">在日常学习和生活中，你经常使用哪些 AI 辅助工具（如 ChatGPT、豆包、Midjourney、Cursor 等）？请举例说明你是如何运用它们解决具体问题的。</div>
+          <textarea id="ex-q9" rows="4" placeholder="请在此作答…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>4. 核心角色选择</label>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.7;">在本次为期 5–6 天的「AI 初创公司模拟」项目中，如果团队需要分工，你认为自己最擅长 / 最希望担任以下哪个核心角色？（可多选并简要说明理由）</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--ink);">
+              <input type="checkbox" id="ex-role-a" style="width:auto;margin-top:3px;accent-color:var(--ink);">
+              <span><strong>A. 技术应用与 Demo 开发</strong>——擅长逻辑、编程或 AI 工具调用</span>
+            </label>
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--ink);">
+              <input type="checkbox" id="ex-role-b" style="width:auto;margin-top:3px;accent-color:var(--ink);">
+              <span><strong>B. 商业逻辑与市场分析</strong>——擅长发现问题、市场调研、挖掘商业 / 社会价值</span>
+            </label>
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--ink);">
+              <input type="checkbox" id="ex-role-c" style="width:auto;margin-top:3px;accent-color:var(--ink);">
+              <span><strong>C. PPT 制作与视觉设计</strong>——擅长排版、美术、审美把控</span>
+            </label>
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--ink);">
+              <input type="checkbox" id="ex-role-d" style="width:auto;margin-top:3px;accent-color:var(--ink);">
+              <span><strong>D. 现场路演与主讲答辩</strong>——擅长公众表达、逻辑陈述</span>
+            </label>
+          </div>
+          <label style="font-size:12px;color:var(--muted);">请简要说明理由</label>
+          <textarea id="ex-q10" rows="3" placeholder="请简要说明你的选择理由…"></textarea>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:8px;">
+          <button class="btn-primary" id="saveExamBtn" onclick="handleExamSave()"
+            style="flex:1;background:var(--muted);letter-spacing:2px;">保 存 草 稿</button>
+          <button class="btn-primary" id="submitExamBtn" onclick="handleExamSubmit()"
+            style="flex:2;">提 交 笔 试</button>
         </div>
       </div>
     </div>
@@ -1200,6 +1434,22 @@
     const pwd  = document.getElementById('loginPwd').value;
     if (!name || !pwd) { showNotification('请填写姓名和密码', 'error'); return; }
 
+    // 测试账号 admin_c：进入选手仪表盘
+    if (name === 'admin_c' && pwd === 'admin_c') {
+      showDashboard('participant');
+      document.getElementById('dash-p-name').textContent = 'admin_c';
+      loadExamDraft();
+      return;
+    }
+
+    // 测试账号 admin_o：进入组委仪表盘
+    if (name === 'admin_o' && pwd === 'admin_o') {
+      showDashboard('organizer');
+      document.getElementById('dash-o-name').textContent = 'admin_o';
+      renderTable([]);
+      return;
+    }
+
     try {
       setLoading('loginBtn', true);
       // FastAPI OAuth2 标准要求用 application/x-www-form-urlencoded 格式，
@@ -1256,19 +1506,12 @@
     document.getElementById('dash-p-name').textContent = name;
     try {
       const info = await api('GET', '/participant/me', null, true);
-      document.getElementById('dash-p-name').textContent    = info.name;
-      document.getElementById('examLink').textContent       = info.exam_url;
-      document.getElementById('dash-p-grade').textContent   = info.grade || '—';
-      document.getElementById('dash-p-regnumber').textContent = info.reg_number;
-      document.getElementById('dash-p-school').textContent  = info.school;
-      const statusEl = document.getElementById('dash-p-status');
-      const statusMap = { pending: '待审核', confirmed: '已确认', rejected: '未通过' };
-      statusEl.textContent   = statusMap[info.status] || info.status;
-      statusEl.style.color   = info.status === 'confirmed' ? 'var(--gold)'
-                             : info.status === 'rejected'  ? 'var(--red)' : 'var(--ink)';
+      document.getElementById('dash-p-name').textContent = info.name;
     } catch (e) {
       showNotification('获取信息失败：' + e.message, 'error');
     }
+    // 自动恢复上次保存的草稿
+    loadExamDraft();
   }
 
   // ── 组委仪表盘 ────────────────────────────────────
@@ -1355,6 +1598,184 @@
     document.getElementById('landing').classList.remove('dimmed');
     document.getElementById('modal-overlay').classList.remove('open');
     document.body.style.overflow = '';
+  }
+
+
+  // 根据月份动态生成对应天数的选项（考虑大小月，2月固定28天）
+  function updateDays() {
+    const month = parseInt(document.getElementById('ex-birth-month').value) || 0;
+    const daySel = document.getElementById('ex-birth-day');
+    const cur = daySel.value;
+    const days = month === 2 ? 29 : [4,6,9,11].includes(month) ? 30 : 31;
+    daySel.innerHTML = '<option value="">日</option>';
+    for (let i = 1; i <= days; i++) {
+      const opt = document.createElement('option');
+      opt.value = i; opt.textContent = i + '日';
+      daySel.appendChild(opt);
+    }
+    if (cur && parseInt(cur) <= days) daySel.value = cur;
+  }
+
+  // 收集表单所有字段为对象
+  function collectExamData() {
+    return {
+      name: document.getElementById('ex-name').value.trim(),
+      gender: document.getElementById('ex-gender').value,
+      age: document.getElementById('ex-age').value,
+      birth_month: document.getElementById('ex-birth-month').value,
+      birth_day: document.getElementById('ex-birth-day').value,
+      school: document.getElementById('ex-school').value.trim(),
+      grade: document.getElementById('ex-grade').value,
+      phone: document.getElementById('ex-phone').value.trim(),
+      parent_phone: document.getElementById('ex-parent-phone').value.trim(),
+      emergency_name: document.getElementById('ex-emergency-name').value.trim(),
+      emergency_rel: document.getElementById('ex-emergency-rel').value,
+      emergency_phone: document.getElementById('ex-emergency-phone').value.trim(),
+      qq: document.getElementById('ex-qq').value.trim(),
+      wechat: document.getElementById('ex-wechat').value.trim(),
+      email: document.getElementById('ex-email').value.trim(),
+      id_card: document.getElementById('ex-idcard').value.trim(),
+      prev_ayes: document.getElementById('ex-prev').value,
+      diet: document.getElementById('ex-diet').value.trim(),
+      size: document.getElementById('ex-size').value,
+      allergy: document.getElementById('ex-allergy').value.trim(),
+      medical: document.getElementById('ex-medical').value,
+      referral: document.getElementById('ex-referral').value,
+      referral_info: document.getElementById('ex-referral-info').value.trim(),
+      teammate: document.getElementById('ex-teammate').value.trim(),
+      q1: document.getElementById('ex-q1').value.trim(),
+      q2: document.getElementById('ex-q2').value.trim(),
+      q3: document.getElementById('ex-q3').value.trim(),
+      q4: document.getElementById('ex-q4').value.trim(),
+      q5: document.getElementById('ex-q5').value.trim(),
+      q6: document.getElementById('ex-q6').value.trim(),
+      q7: document.getElementById('ex-q7').value.trim(),
+      q8_intro: document.getElementById('ex-q8-intro').value.trim(),
+      q8: document.getElementById('ex-q8').value.trim(),
+      q9: document.getElementById('ex-q9').value.trim(),
+      roles: ['a','b','c','d'].filter(r => document.getElementById('ex-role-'+r)?.checked),
+      q10: document.getElementById('ex-q10').value.trim(),
+    };
+  }
+
+  // 将草稿数据填回表单
+  function fillExamData(d) {
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('ex-name', d.name); set('ex-gender', d.gender); set('ex-age', d.age);
+    set('ex-birth-month', d.birth_month);
+    if (d.birth_month) { updateDays(); set('ex-birth-day', d.birth_day); }
+    set('ex-school', d.school); set('ex-grade', d.grade);
+    set('ex-phone', d.phone); set('ex-parent-phone', d.parent_phone);
+    set('ex-emergency-name', d.emergency_name);
+    set('ex-emergency-rel', d.emergency_rel);
+    set('ex-emergency-phone', d.emergency_phone);
+    set('ex-qq', d.qq); set('ex-wechat', d.wechat); set('ex-email', d.email);
+    set('ex-idcard', d.id_card); set('ex-prev', d.prev_ayes);
+    set('ex-diet', d.diet); set('ex-size', d.size);
+    set('ex-allergy', d.allergy); set('ex-medical', d.medical);
+    set('ex-referral', d.referral); set('ex-referral-info', d.referral_info);
+    set('ex-teammate', d.teammate);
+    set('ex-q1', d.q1); set('ex-q2', d.q2); set('ex-q3', d.q3); set('ex-q4', d.q4);
+    set('ex-q5', d.q5); set('ex-q6', d.q6); set('ex-q7', d.q7);
+    set('ex-q8-intro', d.q8_intro);
+    set('ex-q8', d.q8); set('ex-q9', d.q9);
+    if (Array.isArray(d.roles)) d.roles.forEach(r => {
+      const el = document.getElementById('ex-role-'+r); if (el) el.checked = true;
+    });
+    set('ex-q10', d.q10);
+    checkMinor(); toggleReferral();
+  }
+
+  // 保存草稿到 localStorage
+  function handleExamSave() {
+    const data = collectExamData();
+    localStorage.setItem('examDraft_' + (authToken || 'guest'), JSON.stringify(data));
+    showNotification('草稿已保存，下次登录后可继续填写', 'success');
+  }
+
+  // 登录后自动读取草稿
+  function loadExamDraft() {
+    const raw = localStorage.getItem('examDraft_' + (authToken || 'guest'));
+    if (raw) {
+      try { fillExamData(JSON.parse(raw)); } catch(e) {}
+    }
+  }
+
+  // ── 笔试表单逻辑 ──────────────────────────────────
+
+  // 根据年龄判断是否未成年，未成年时显示家长电话字段
+  function checkMinor() {
+    const age = parseInt(document.getElementById('ex-age')?.value) || 0;
+    document.getElementById('ex-parent-group').style.display = (age > 0 && age < 18) ? 'block' : 'none';
+  }
+
+  // 选择"是否参与老带新"时，显示或隐藏介绍人填写区
+  function toggleReferral() {
+    const val = document.getElementById('ex-referral').value;
+    document.getElementById('ex-referral-detail').style.display = val === '我是新选手' ? 'block' : 'none';
+  }
+
+  // 提交笔试表单
+  async function handleExamSubmit() {
+    const required = [
+      ['ex-name','姓名'],['ex-gender','性别'],['ex-age','年龄'],
+      ['ex-birth-month','出生月份'],['ex-birth-day','出生日期'],
+      ['ex-school','学校'],['ex-grade','年级'],['ex-phone','本人电话'],
+      ['ex-emergency-name','紧急联系人姓名'],['ex-emergency-rel','紧急联系人关系'],
+      ['ex-emergency-phone','紧急联系人电话'],
+      ['ex-qq','QQ号'],['ex-wechat','微信号'],['ex-email','电子邮箱'],
+      ['ex-idcard','身份证号'],['ex-prev','是否参加过ayes'],
+      ['ex-diet','忌口'],['ex-size','上衣尺码'],['ex-allergy','致敏原'],
+      ['ex-medical','病史'],['ex-referral','是否参与老带新'],
+      ['ex-teammate','希望与谁组队'],
+      ['ex-q1','第1题'],['ex-q2','第2题'],['ex-q3','第3题'],['ex-q4','第4题'],
+      ['ex-q5','第5题'],['ex-q6','第6题'],['ex-q7','第7题'],['ex-q8-intro','第8题'],
+      ['ex-q8','自评第1题'],['ex-q9','自评第2题'],
+      ['ex-q10','核心角色理由'],
+    ];
+    for (const [id, label] of required) {
+      const el = document.getElementById(id);
+      if (!el || !el.value.trim()) {
+        showNotification(`请填写：${label}`, 'error');
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+    }
+    const age = parseInt(document.getElementById('ex-age').value);
+    if (age < 18 && !document.getElementById('ex-parent-phone').value.trim()) {
+      showNotification('未成年选手请填写家长电话', 'error'); return;
+    }
+    const selectedRoles = ['a','b','c','d'].filter(r => document.getElementById('ex-role-'+r)?.checked);
+    if (selectedRoles.length === 0) {
+      showNotification('请至少选择一个核心角色', 'error');
+      document.getElementById('ex-role-a')?.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    if (document.getElementById('ex-referral').value === '我是新选手' &&
+        !document.getElementById('ex-referral-info').value.trim()) {
+      showNotification('请填写介绍人信息', 'error'); return;
+    }
+
+    const payload = collectExamData();
+
+    try {
+      setLoading('submitExamBtn', true);
+      // 后续替换为: await api('POST', '/exam/submit', payload, true);
+      console.log('笔试提交内容：', payload);
+      // 提交成功后清除草稿
+      localStorage.removeItem('examDraft_' + (authToken || 'guest'));
+      document.getElementById('dash-participant').innerHTML = `
+        <div style="padding:48px 32px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:20px;">✓</div>
+          <div style="font-family:'Noto Serif SC',serif;font-size:20px;color:var(--ink);margin-bottom:12px;">提交成功</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.9;">感谢你的参与！<br>组委会将在审核后通知你结果。</div>
+          <button onclick="logout()" style="margin-top:32px;padding:10px 28px;background:var(--ink);color:var(--cream);border:none;font-family:'Noto Serif SC',serif;font-size:14px;letter-spacing:2px;cursor:pointer;">返 回 首 页</button>
+        </div>`;
+    } catch(e) {
+      showNotification('提交失败：' + e.message, 'error');
+    } finally {
+      setLoading('submitExamBtn', false);
+    }
   }
 
   // 页面加载完成后，将每个主按钮的原始文字存入 data-label 属性，
