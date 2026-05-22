@@ -3,1788 +3,1061 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ayes2026 报名系统</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<title>AYES2026 — Asian Youth Excellence Summit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+SC:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1a1a2e;
-    --gold: #c9a84c;
-    --gold-light: #e8c97a;
-    --red: #9b2335;
-    --cream: #f5f0e8;
-    --cream-dark: #ede5d4;
-    --white: #fdfcf9;
-    --muted: #7a7060;
-    --shadow: 0 8px 40px rgba(26,26,46,0.15);
+    --gold: #C9A84C;
+    --gold-light: #E8CC7A;
+    --gold-dim: #8B6F2E;
+    --ink: #0D0D0D;
+    --ink-mid: #1A1A1A;
+    --ink-soft: #2A2A2A;
+    --cream: #F5F0E8;
+    --cream-dim: #EDE6D6;
+    --white: #FAFAF7;
+    --muted: #6B6455;
+    --nav-h: 72px;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
 
   body {
-    font-family: 'Noto Sans SC', sans-serif;
-    min-height: 100vh;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Noto Serif SC', serif;
     overflow-x: hidden;
+    cursor: none;
   }
 
-  /* ══ 初始落地页 ══════════════════════════════════════ */
-
-  /* 全屏背景容器：背景图片在这里设置，换图只需改 background-image 这一行 */
-  #landing {
+  /* ─── Custom Cursor ─── */
+  .cursor {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    pointer-events: none;
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.2s, height 0.2s, border-color 0.2s;
+  }
+  .cursor-dot {
     position: fixed;
-    inset: 0;
-    background-image: url('bg.jpg');   /* ← 换背景图改这里，支持任意图片路径或URL */
-    background-size: cover;
-    background-position: center;
-    background-color: #1a1a2e;         /* 图片未加载时的兜底颜色 */
-    transition: filter 0.5s ease;
-    z-index: 0;
+    width: 5px; height: 5px;
+    background: var(--gold);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.05s;
   }
+  body:hover .cursor-ring { opacity: 1; }
 
-  /* 落地页遮罩：深色半透明层，让文字在任何背景图上都清晰可读 */
-  #landing::before {
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 3rem;
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    transition: background 0.4s;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .nav-logo span { font-style: italic; color: var(--gold-light); }
+  .nav-links {
+    display: flex; gap: 0; list-style: none;
+  }
+  .nav-links a {
+    display: block;
+    padding: 0.45rem 0.9rem;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.72rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: rgba(245,240,232,0.7);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s;
+  }
+  .nav-links a::after {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; bottom: 0; left: 50%; right: 50%;
+    height: 1px;
+    background: var(--gold);
+    transition: left 0.3s, right 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+  .nav-links a:hover::after { left: 0.9rem; right: 0.9rem; }
+  .nav-links a.active { color: var(--gold); }
+  .nav-cta {
+    background: var(--gold);
+    color: var(--ink) !important;
+    padding: 0.5rem 1.4rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.15em !important;
+    transition: background 0.3s, color 0.3s !important;
+  }
+  .nav-cta:hover { background: var(--gold-light) !important; color: var(--ink) !important; }
+  .nav-cta::after { display: none !important; }
+
+  /* ─── HERO ─── */
+  #home {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 0;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: url('img-bg.png') center center / cover no-repeat;
+  }
+  .hero-bg::after {
+    content: '';
+    position: absolute; inset: 0;
     background: linear-gradient(
-      160deg,
-      rgba(26,26,46,0.55) 0%,
-      rgba(26,26,46,0.35) 50%,
-      rgba(26,26,46,0.65) 100%
+      180deg,
+      rgba(0,0,0,0.18) 0%,
+      rgba(0,0,0,0.02) 40%,
+      rgba(0,0,0,0.02) 70%,
+      rgba(0,0,0,0.45) 100%
     );
   }
-
-  /* 弹窗打开时背景变暗变模糊 */
-  #landing.dimmed {
-    filter: brightness(0.45) blur(6px);
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: rgba(201,168,76,0.5);
+    animation: fadeUp 1.2s 0.8s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(180deg, var(--gold-dim), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%,100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.1); }
   }
 
-  /* 落地页内容区：垂直居中，相对定位使其层叠在遮罩之上 */
-  #landing-content {
-    position: relative;
-    z-index: 1;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 24px;
-    color: #fff;
-  }
+  /* ─── SECTIONS ─── */
+  section { padding: 7rem 0; }
+  .container { max-width: 1160px; margin: 0 auto; padding: 0 3rem; }
 
-  /* 落地页徽章 */
-  .landing-badge {
-    display: inline-block;
-    border: 1px solid rgba(201,168,76,0.7);
-    color: rgba(201,168,76,0.9);
-    font-size: 11px;
-    letter-spacing: 4px;
-    padding: 5px 18px;
-    margin-bottom: 24px;
-    font-family: 'Noto Serif SC', serif;
-    animation: fadeDown 0.7s ease both;
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 1rem;
   }
-
-  /* 落地页主标题 */
-  #landing-content h1 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(36px, 7vw, 64px);
-    font-weight: 700;
-    letter-spacing: 4px;
-    color: #fff;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
-    margin-bottom: 20px;
-    animation: fadeDown 0.7s ease 0.1s both;
-  }
-
-  /* 落地页介绍文字 */
-  #landing-content .landing-desc {
-    font-size: clamp(13px, 2vw, 16px);
-    color: rgba(255,255,255,0.78);
-    line-height: 1.9;
-    max-width: 480px;
-    margin-bottom: 48px;
-    animation: fadeUp 0.7s ease 0.2s both;
-  }
-
-  /* 落地页按钮组 */
-  .landing-btns {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-    animation: fadeUp 0.7s ease 0.3s both;
-  }
-
-  .btn-landing-primary {
-    padding: 13px 36px;
+  .section-label::before {
+    content: '';
+    width: 30px; height: 1px;
     background: var(--gold);
-    color: var(--ink);
-    border: none;
-    font-family: 'Noto Serif SC', serif;
-    font-size: 15px;
-    letter-spacing: 2px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 1rem;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  /* ─── NEWS ─── */
+  #news { background: var(--ink-mid); }
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    margin-top: 3.5rem;
+    border: 1px solid rgba(201,168,76,0.12);
+  }
+  .news-card {
+    padding: 2.2rem;
+    background: var(--ink-mid);
+    border-right: 1px solid rgba(201,168,76,0.1);
+    transition: background 0.3s;
     cursor: pointer;
-    transition: background 0.2s, transform 0.15s;
   }
-  .btn-landing-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
-
-  .btn-landing-secondary {
-    padding: 13px 36px;
-    background: transparent;
-    color: #fff;
-    border: 1.5px solid rgba(255,255,255,0.6);
-    font-family: 'Noto Serif SC', serif;
-    font-size: 15px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  .news-card:last-child { border-right: none; }
+  .news-card:hover { background: rgba(201,168,76,0.04); }
+  .news-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 0.2rem 0.6rem;
+    margin-bottom: 1.2rem;
   }
-  .btn-landing-secondary:hover {
-    border-color: #fff;
-    background: rgba(255,255,255,0.08);
-    transform: translateY(-2px);
+  .news-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.1em;
   }
-
-  /* 右上角按钮（小屏备用，始终可见） */
-  #corner-btns {
-    position: fixed;
-    top: 20px;
-    right: 24px;
-    display: flex;
-    gap: 10px;
-    z-index: 10;
-    animation: fadeDown 0.5s ease both;
+  .news-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--cream);
+    margin-bottom: 0.8rem;
   }
+  .news-excerpt { font-size: 0.82rem; color: var(--muted); line-height: 1.75; font-weight: 300; }
 
-  .corner-btn {
-    padding: 7px 18px;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    border: 1.5px solid rgba(255,255,255,0.6);
-    background: rgba(26,26,46,0.35);
-    color: #fff;
-    backdrop-filter: blur(4px);
-    transition: all 0.2s;
+  /* ─── ABOUT ─── */
+  #about {
+    position: relative;
+    background: linear-gradient(135deg, #0a0a08 0%, #111108 100%);
   }
-  .corner-btn:hover { background: rgba(26,26,46,0.7); border-color: #fff; }
-  .corner-btn.gold { background: rgba(201,168,76,0.85); border-color: var(--gold); color: var(--ink); }
-  .corner-btn.gold:hover { background: var(--gold); }
-
-  /* ══ 弹窗（模态框）══════════════════════════════════ */
-
-  /* 模态框遮罩层：点击空白处可关闭 */
-  #modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
+  .about-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
     align-items: center;
-    justify-content: center;
-    padding: 24px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.35s ease;
+    margin-top: 4rem;
+  }
+  .about-text p {
+    font-size: 0.95rem;
+    line-height: 2;
+    color: rgba(245,240,232,0.65);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+  .about-text strong { color: var(--gold-light); font-weight: 400; }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5px;
+    background: rgba(201,168,76,0.1);
+  }
+  .stat-box {
+    background: #0D0D0D;
+    padding: 2.5rem;
+    text-align: center;
+    transition: background 0.3s;
+  }
+  .stat-box:hover { background: rgba(201,168,76,0.04); }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-num sup { font-size: 1.5rem; vertical-align: super; }
+  .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; letter-spacing: 0.1em; }
+
+  /* ─── SCHEDULE / GALLERY ─── */
+  #schedule { background: var(--ink); }
+
+  .gallery-wrap {
+    margin-top: 3rem;
+    position: relative;
   }
 
-  #modal-overlay.open {
+  /* Thumbnail strip */
+  .gallery-thumbs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold-dim) transparent;
+  }
+  .gallery-thumbs::-webkit-scrollbar { height: 3px; }
+  .gallery-thumbs::-webkit-scrollbar-track { background: transparent; }
+  .gallery-thumbs::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+  .gallery-thumb {
+    flex: 0 0 100px;
+    height: 68px;
+    border: 2px solid transparent;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.25s, opacity 0.25s;
+    opacity: 0.45;
+    position: relative;
+  }
+  .gallery-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+  .gallery-thumb.active {
+    border-color: var(--gold);
+    opacity: 1;
+  }
+  .gallery-thumb:hover { opacity: 0.85; }
+
+  /* Main stage */
+  .gallery-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    overflow: hidden;
+  }
+  .gallery-slide {
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1);
+    pointer-events: none;
+  }
+  .gallery-slide.active {
     opacity: 1;
     pointer-events: auto;
   }
-
-  /* 弹窗卡片：从下方弹入 */
-  #modal-card {
-    width: 100%;
-    max-width: 520px;
-    max-height: 90vh;
-    overflow-y: auto;
-    background: var(--white);
-    border: 1px solid rgba(201,168,76,0.3);
-    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-    position: relative;
-    transform: translateY(30px);
-    transition: transform 0.35s ease;
+  .gallery-slide img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
-  #modal-card::before {
-    content: '';
+  /* Caption overlay */
+  .gallery-caption {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+    bottom: 0; left: 0; right: 0;
+    padding: 2.5rem 2.5rem 2rem;
+    background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, transparent 100%);
+    transform: translateY(4px);
+    transition: transform 0.4s;
   }
-
-  #modal-overlay.open #modal-card {
-    transform: translateY(0);
-  }
-
-  /* 弹窗关闭按钮 */
-  #modal-close {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: var(--muted);
-    cursor: pointer;
-    line-height: 1;
-    z-index: 1;
-    transition: color 0.2s;
-  }
-  #modal-close:hover { color: var(--ink); }
-
-  /* ══ 原有卡片内部样式（移入弹窗后沿用）══════════════ */
-
-  /* 弹窗内标题区 */
-  .header { text-align: center; margin-bottom: 24px; padding: 24px 32px 0; }
-  .header p { font-size: 13px; color: var(--muted); letter-spacing: 0.5px; }
-
-  /* 弹窗主容器 */
-  .app { width: 100%; position: relative; }
-
-  /* 弹窗内卡片（去掉外层 box-shadow，由 modal-card 接管） */
-  .card { background: transparent; border: none; box-shadow: none; }
-  .card::before { display: none; }
-
-  .header-badge {
-    display: inline-block;
-    border: 1.5px solid var(--gold);
+  .gallery-slide.active .gallery-caption { transform: translateY(0); }
+  .gallery-caption-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
     color: var(--gold);
-    font-size: 11px;
-    letter-spacing: 3px;
-    padding: 4px 16px;
-    margin-bottom: 16px;
-    font-family: 'Noto Serif SC', serif;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .gallery-caption-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.2;
   }
 
-  .header h1 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--ink);
-    line-height: 1.3;
-    margin-bottom: 8px;
-  }
-
-  .header p {
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 1px;
-  }
-
-  /* 主卡片容器：白色背景，金色边框，带向上淡入动画 */
-  .card {
-    background: var(--white);
+  /* Prev / Next arrows */
+  .gallery-arrow {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(0,0,0,0.45);
     border: 1px solid rgba(201,168,76,0.3);
-    box-shadow: var(--shadow);
-    animation: fadeUp 0.6s ease 0.1s both;
+    color: var(--gold);
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.25s, border-color 0.25s;
+    backdrop-filter: blur(4px);
+    user-select: none;
+  }
+  .gallery-arrow:hover { background: rgba(201,168,76,0.18); border-color: var(--gold); }
+  .gallery-arrow.prev { left: 1rem; }
+  .gallery-arrow.next { right: 1rem; }
+
+  /* Counter */
+  .gallery-counter {
+    position: absolute;
+    top: 1rem; right: 1.2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: rgba(245,240,232,0.55);
+    z-index: 10;
+  }
+
+  /* ─── PAST ─── */
+  #past { background: var(--ink-mid); }
+  .past-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 3.5rem;
+  }
+  .past-card {
     position: relative;
+    aspect-ratio: 3/4;
+    background: var(--ink-soft);
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .past-card-bg {
+    position: absolute; inset: 0;
+    transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  }
+  .past-card:hover .past-card-bg { transform: scale(1.05); }
+  .past-card:nth-child(1) .past-card-bg { background: linear-gradient(135deg, #1A1208 0%, #2A1F0A 50%, #151008 100%); }
+  .past-card:nth-child(2) .past-card-bg { background: linear-gradient(135deg, #080D18 0%, #0D1528 50%, #060A12 100%); }
+  .past-card:nth-child(3) .past-card-bg { background: linear-gradient(135deg, #0D180D 0%, #152515 50%, #0A120A 100%); }
+  .past-card-pattern {
+    position: absolute; inset: 0;
+    opacity: 0.3;
+    background-image: radial-gradient(circle at 30% 40%, rgba(201,168,76,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(201,168,76,0.08) 0%, transparent 40%);
+  }
+  .past-card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 60%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 2rem;
+  }
+  .past-year {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    font-weight: 300;
+    color: rgba(201,168,76,0.25);
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    line-height: 1;
+  }
+  .past-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+  .past-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--cream);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+  .past-info { font-size: 0.75rem; color: rgba(245,240,232,0.5); font-weight: 300; }
+
+  /* ─── REVIEWS ─── */
+  #reviews { background: var(--ink); position: relative; overflow: hidden; }
+  .reviews-track-wrap { overflow: hidden; margin-top: 3.5rem; }
+  .reviews-track {
+    display: flex;
+    gap: 1.5rem;
+    animation: slide 35s linear infinite;
+    width: max-content;
+  }
+  .reviews-track:hover { animation-play-state: paused; }
+  @keyframes slide {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .review-card {
+    flex: 0 0 360px;
+    border: 1px solid rgba(201,168,76,0.12);
+    padding: 2rem;
+    background: rgba(201,168,76,0.02);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .review-card:hover { border-color: rgba(201,168,76,0.35); background: rgba(201,168,76,0.05); }
+  .review-stars {
+    color: var(--gold);
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 1rem;
+  }
+  .review-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.8;
+    font-style: italic;
+    color: rgba(245,240,232,0.8);
+    margin-bottom: 1.5rem;
+  }
+  .review-author {
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .review-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .review-name { font-size: 0.8rem; color: var(--cream); font-weight: 400; }
+  .review-meta { font-size: 0.68rem; color: var(--muted); margin-top: 0.15rem; }
+
+  /* ─── FAQ ─── */
+  #faq { background: #0A0A08; }
+  .faq-list { margin-top: 3.5rem; }
+  .faq-item {
+    border-bottom: 1px solid rgba(201,168,76,0.1);
     overflow: hidden;
   }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
-  }
-
-  /* 标签栏：登录 / 注册两个选项横排，底部有分隔线 */
-  .tabs {
-    display: flex;
-    border-bottom: 1px solid var(--cream-dark);
-  }
-
-  .tab-btn {
-    flex: 1;
-    padding: 16px;
-    background: none;
-    border: none;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 14px;
-    color: var(--muted);
+  .faq-q {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.6rem 0;
     cursor: pointer;
-    transition: all 0.25s;
-    position: relative;
-    letter-spacing: 0.5px;
+    transition: color 0.3s;
   }
-
-  .tab-btn.active {
-    color: var(--ink);
-    font-weight: 500;
+  .faq-q:hover { color: var(--gold-light); }
+  .faq-q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    padding-right: 2rem;
   }
-
-  .tab-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px; left: 20%; right: 20%;
-    height: 2px;
-    background: var(--gold);
+  .faq-icon {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: transform 0.4s, background 0.3s;
   }
-
-  .tab-btn:hover:not(.active) {
-    color: var(--ink);
-    background: rgba(201,168,76,0.04);
+  .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(201,168,76,0.12); }
+  .faq-a {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.9;
+    font-weight: 300;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.16,1,0.3,1), padding 0.3s;
   }
+  .faq-item.open .faq-a { max-height: 200px; padding-bottom: 1.5rem; }
 
-  /* 面板（登录 / 注册 / 忘记密码）：默认隐藏，激活时淡入显示 */
-  .panel { display: none; padding: 32px; }
-  .panel.active { display: block; animation: fadeIn 0.3s ease; }
-
-  /* 身份选择卡片组：两列网格排列，用于选择选手或组委身份 */
-  .role-selector {
+  /* ─── REGISTER ─── */
+  #register {
+    background: linear-gradient(135deg, #0D0D0D 0%, #111109 100%);
+    position: relative; overflow: hidden;
+  }
+  .register-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(201,168,76,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .register-inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 24px;
+    gap: 6rem;
+    align-items: start;
+    position: relative; z-index: 1;
   }
-
-  .role-card {
-    border: 1.5px solid var(--cream-dark);
-    padding: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    position: relative;
-    background: var(--white);
+  .register-info .section-title { margin-bottom: 1.5rem; }
+  .register-info p {
+    font-size: 0.9rem; line-height: 2; color: rgba(245,240,232,0.6); font-weight: 300;
+    margin-bottom: 2rem;
   }
-
-  .role-card:hover { border-color: var(--gold); }
-
-  .role-card.selected {
+  .register-detail {
+    display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2.5rem;
+  }
+  .detail-row {
+    display: flex; gap: 1rem; align-items: baseline;
+    font-size: 0.82rem;
+  }
+  .detail-key {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    min-width: 90px;
+  }
+  .detail-val { color: rgba(245,240,232,0.7); font-weight: 300; }
+  .register-form { padding-top: 0.5rem; }
+  .form-group { margin-bottom: 1.5rem; }
+  .form-label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+  }
+  .form-input {
+    width: 100%;
+    background: rgba(245,240,232,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--cream);
+    padding: 0.85rem 1.1rem;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.88rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  .form-input:focus {
     border-color: var(--gold);
     background: rgba(201,168,76,0.06);
   }
-
-  .role-card.selected::after {
-    content: '✓';
-    position: absolute;
-    top: 6px; right: 8px;
-    font-size: 11px;
-    color: var(--gold);
-    font-weight: 700;
-  }
-
-  .role-icon {
-    font-size: 22px;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .role-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--ink);
-    margin-bottom: 2px;
-  }
-
-  .role-desc {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  /* 小节标题：带右侧延伸横线，用于分隔表单各信息组 */
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    margin-bottom: 16px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--cream-dark);
-  }
-
-  /* 表单项：每个字段占一行，底部留间距 */
-  .form-group { margin-bottom: 16px; }
-
-  label {
-    display: block;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
-  }
-
-  input:not([type="checkbox"]), select {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1.5px solid var(--cream-dark);
-    background: var(--white);
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 14px;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  /* checkbox 单独样式：恢复原生外观，加金色选中色 */
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: var(--ink);
-    flex-shrink: 0;
-  }
-
-  input:not([type="checkbox"]):focus, select:focus { border-color: var(--gold); }
-  input:not([type="checkbox"])::placeholder { color: #bbb; }
-
-  /* 密码输入框容器：相对定位，使眼睛图标能绝对定位到右侧 */
-  .pwd-wrap { position: relative; }
-  /* 默认不留右侧空间，外观与普通输入框完全一致；悬停容器时才留出眼睛位置 */
-  .pwd-wrap input { padding-right: 14px; transition: padding-right 0.15s; }
-  .pwd-wrap:hover input { padding-right: 42px; }
-
-  /* 眼睛按钮：默认隐藏（opacity:0），鼠标移入容器后淡入显示 */
-  .pwd-eye {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s, color 0.2s;
-  }
-  /* 鼠标移入密码框容器时显示眼睛，或密码已锁定明文显示时始终可见 */
-  .pwd-wrap:hover .pwd-eye,
-  .pwd-wrap.locked   .pwd-eye { opacity: 1; pointer-events: auto; }
-  .pwd-eye:hover { color: var(--ink); }
-
-  /* 注册时根据身份动态显示的额外字段（选手信息 / 组委信息），切换时带淡入动画 */
-  .extra-fields { display: none; }
-  .extra-fields.show { display: block; animation: fadeIn 0.3s ease; }
-
-  /* 主操作按钮：深色底、浅色字，悬停时有金色光扫过的动画效果 */
+  .form-input::placeholder { color: rgba(245,240,232,0.25); }
+  select.form-input option { background: #1A1A1A; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .btn-primary {
     width: 100%;
-    padding: 14px;
-    background: var(--ink);
-    color: var(--cream);
-    border: none;
-    font-family: 'Noto Serif SC', serif;
-    font-size: 15px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.25s;
-    margin-top: 8px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-primary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.15) 50%, transparent 100%);
-    transform: translateX(-100%);
-    transition: transform 0.4s;
-  }
-
-  .btn-primary:hover { background: #2d2d4e; }
-  .btn-primary:hover::before { transform: translateX(100%); }
-  .btn-primary:active { transform: scale(0.99); }
-
-  /* 分隔线：文字居中，两侧各有一条横线，用于视觉分隔区块 */
-  .divider {
-    text-align: center;
-    margin: 20px 0;
-    position: relative;
-    color: var(--muted);
-    font-size: 12px;
-  }
-  .divider::before, .divider::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 38%;
-    height: 1px;
-    background: var(--cream-dark);
-  }
-  .divider::before { left: 0; }
-  .divider::after { right: 0; }
-
-  /* 消息通知横幅：成功为绿色，错误为红色，左侧有彩色竖条标识 */
-  .notification {
-    display: none;
-    padding: 14px 20px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    border-left: 3px solid;
-    animation: fadeIn 0.3s ease;
-  }
-  .notification.success { background: #f0f7f0; border-color: #4a9a5a; color: #2d6b3a; }
-  .notification.error { background: #fdf0f0; border-color: var(--red); color: var(--red); }
-  .notification.show { display: block; }
-
-  /* 登录后仪表盘：默认隐藏，登录成功后通过添加 .show 类切换显示 */
-  .dashboard { display: none; padding: 32px; animation: fadeIn 0.4s ease; }
-  .dashboard.show { display: block; }
-
-  .dash-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--cream-dark);
-  }
-
-  .dash-title {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 18px;
+    background: var(--gold);
     color: var(--ink);
+    border: none;
+    padding: 1rem;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
   }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
 
-  .dash-role-badge {
-    font-size: 11px;
-    padding: 3px 10px;
-    border: 1px solid var(--gold);
+  /* ─── FOOTER ─── */
+  footer {
+    background: #080808;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    padding: 3rem 0 2rem;
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
     color: var(--gold);
-    letter-spacing: 1px;
   }
-
-  .logout-btn {
-    background: none;
-    border: none;
-    font-size: 12px;
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
     color: var(--muted);
-    cursor: pointer;
-    text-decoration: underline;
-    font-family: 'Noto Sans SC', sans-serif;
-  }
-  .logout-btn:hover { color: var(--red); }
-
-  /* 选手仪表盘 — 笔试链接卡片：金色渐变背景，突出显示专属考试链接 */
-  .exam-card {
-    border: 1px solid rgba(201,168,76,0.4);
-    background: linear-gradient(135deg, rgba(201,168,76,0.05), rgba(201,168,76,0.12));
-    padding: 20px;
-    margin-bottom: 16px;
-    position: relative;
   }
 
-  .exam-card-label {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--gold);
-    margin-bottom: 8px;
+  /* ─── SCROLL ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
   }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
 
-  .exam-link-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--white);
-    border: 1px solid var(--cream-dark);
-    padding: 10px 14px;
-    margin-top: 12px;
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px;
+    background: rgba(201,168,76,0.1);
+    z-index: 200;
   }
-
-  .exam-link-text {
-    flex: 1;
-    font-size: 13px;
-    color: var(--ink);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .copy-btn {
-    background: var(--ink);
-    color: var(--cream);
-    border: none;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 11px;
-    padding: 6px 12px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-  .copy-btn:hover { background: var(--gold); color: var(--ink); }
-
-  .info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 16px;
-  }
-
-  .info-item {
-    background: var(--cream);
-    padding: 12px;
-    text-align: center;
-  }
-
-  .info-item-value {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 18px;
-    color: var(--ink);
-    font-weight: 700;
-  }
-
-  .info-item-label {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  /* 组委仪表盘 — 搜索行：输入框自动占满剩余宽度，搜索按钮固定宽度 */
-  .search-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .search-row input {
-    flex: 1;
-    padding: 9px 12px;
-  }
-
-  .search-row button {
-    padding: 9px 16px;
-    background: var(--ink);
-    color: var(--cream);
-    border: none;
-    font-size: 13px;
-    cursor: pointer;
-    font-family: 'Noto Sans SC', sans-serif;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-
-  th {
-    background: var(--ink);
-    color: var(--cream);
-    padding: 10px 12px;
-    text-align: left;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    font-size: 12px;
-  }
-
-  td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--cream-dark);
-    color: var(--ink);
-  }
-
-  tr:hover td { background: rgba(201,168,76,0.05); }
-
-  .status-badge {
-    display: inline-block;
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 2px;
-    letter-spacing: 0.5px;
-  }
-  .status-badge.pending { background: #fff8e6; color: #a07800; border: 1px solid #e8c97a; }
-  .status-badge.done { background: #edf7ed; color: #2d6b3a; border: 1px solid #8dc98d; }
-
-  .table-wrap { overflow-x: auto; }
-
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .stat-box {
-    background: var(--cream);
-    padding: 14px;
-    text-align: center;
-    border: 1px solid rgba(201,168,76,0.2);
-  }
-  .stat-num { font-family: 'Noto Serif SC', serif; font-size: 22px; color: var(--ink); font-weight: 700; }
-  .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-  /* 动画定义：fadeUp（向上浮现）、fadeDown（向下浮现）、fadeIn（原地淡入）*/
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  textarea {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1.5px solid var(--cream-dark);
-    background: var(--white);
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 14px;
-    color: var(--ink);
-    outline: none;
-    resize: vertical;
-    transition: border-color 0.2s;
-    line-height: 1.7;
-  }
-  textarea:focus { border-color: var(--gold); }
-  textarea::placeholder { color: #bbb; }
-
-  /* 页脚：在弹窗内底部显示 */
-  .footer {
-    text-align: center;
-    padding: 16px 0 20px;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1px;
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-light));
+    width: 0%;
+    transition: width 0.1s;
   }
 </style>
 </head>
 <body>
 
+<div class="cursor"><div class="cursor-ring" id="cursorRing"></div></div>
+<div class="cursor-dot" id="cursorDot"></div>
 
-<!-- ══ 全屏背景落地页 ══════════════════════════════════ -->
-<div id="landing">
-  <div id="landing-content">
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#home" class="nav-logo">AYES<span>2026</span></a>
+  <ul class="nav-links">
+    <li><a href="#home" data-section="home">首页</a></li>
+    <li><a href="#news" data-section="news">资讯动态</a></li>
+    <li><a href="#about" data-section="about">活动简介</a></li>
+    <li><a href="#schedule" data-section="schedule">活动详情</a></li>
+    <li><a href="#past" data-section="past">往届回顾</a></li>
+    <li><a href="#reviews" data-section="reviews">往届评价</a></li>
+    <li><a href="#faq" data-section="faq">常见问题</a></li>
+    <li><a href="#register" class="nav-cta" data-section="register">报名</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
   </div>
-</div>
+</section>
 
-<!-- 右上角常驻按钮 -->
-<div id="corner-btns">
-  <button class="corner-btn" onclick="openModal('login')">登录</button>
-  <button class="corner-btn gold" onclick="openModal('register')">注册</button>
-</div>
-
-<!-- ══ 弹窗 ════════════════════════════════════════════ -->
-<div id="modal-overlay" onclick="handleOverlayClick(event)">
-  <div id="modal-card">
-    <button id="modal-close" onclick="closeModal()">×</button>
-
-    <div class="app">
-      <div class="header">
-        <p>报名时间：2026年5月11日～6月14日</p>
-      </div>
-
-      <div class="card" id="mainCard">
-        <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('login')">登 录</button>
-          <button class="tab-btn" onclick="switchTab('register')">注 册</button>
-        </div>
-
-        <div id="notification" class="notification"></div>
-
-    <!-- LOGIN PANEL -->
-    <div class="panel active" id="panel-login">
-      <div class="section-label">选择身份</div>
-      <div class="role-selector">
-        <div class="role-card selected" onclick="selectLoginRole(this, 'participant')">
-          <span class="role-icon">🎓</span>
-          <div class="role-name">选 手</div>
-          <div class="role-desc">参赛选手登录</div>
-        </div>
-        <div class="role-card" onclick="selectLoginRole(this, 'organizer')">
-          <span class="role-icon">🏛️</span>
-          <div class="role-name">组 委</div>
-          <div class="role-desc">组委会成员登录</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>姓名</label>
-        <input type="text" id="loginName" placeholder="请输入注册时填写的真实姓名">
-      </div>
-      <div class="form-group">
-        <label>密码</label>
-        <div class="pwd-wrap">
-          <input type="password" id="loginPwd" placeholder="请输入密码">
-          <button type="button" class="pwd-eye" onmouseenter="showPwd('loginPwd')" onmouseleave="hidePwd('loginPwd')" onclick="togglePwd('loginPwd', this)" title="悬停预览 / 点击锁定显示">
-            <svg id="loginPwd-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-      </div>
-      <button class="btn-primary" id="loginBtn" onclick="handleLogin()">登 录</button>
-      <div style="text-align:center;margin-top:14px;">
-        <button onclick="showPanel('forgot')" style="background:none;border:none;font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;font-family:inherit;">忘记密码？</button>
-      </div>
+<!-- NEWS -->
+<section id="news">
+  <div class="container">
+    <p class="section-label reveal">资讯动态</p>
+    <h2 class="section-title reveal reveal-delay-1">最新<em>资讯</em></h2>
+    <div style="margin-top:3rem;padding:4rem 0;border:1px dashed rgba(201,168,76,0.15);text-align:center;" class="reveal reveal-delay-2">
+      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);">COMING SOON · 内容建设中</p>
     </div>
+  </div>
+</section>
 
-    <!-- FORGOT PASSWORD PANEL -->
-    <div class="panel" id="panel-forgot">
-      <div style="margin-bottom:20px;">
-        <button onclick="showPanel('login')" style="background:none;border:none;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;">← 返回登录</button>
-      </div>
-      <div class="section-label">重置密码</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7;">输入您的真实姓名与注册邮箱，我们将发送重置链接至您的邮箱。</p>
-      <div class="form-group">
-        <label>姓名</label>
-        <input type="text" id="forgotName" placeholder="请输入注册时填写的姓名">
-      </div>
-      <div class="form-group">
-        <label>注册邮箱</label>
-        <input type="email" id="forgotEmail" placeholder="请输入注册邮箱">
-      </div>
-      <button class="btn-primary" id="forgotBtn" onclick="handleForgot()">发 送 重 置 邮 件</button>
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <p class="section-label reveal">关于峰会</p>
+    <h2 class="section-title reveal reveal-delay-1">活动<em>简介</em></h2>
+    <div style="margin-top:3rem;padding:4rem 0;border:1px dashed rgba(201,168,76,0.15);text-align:center;" class="reveal reveal-delay-2">
+      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);">COMING SOON · 内容建设中</p>
     </div>
+  </div>
+</section>
 
-    <!-- REGISTER PANEL -->
-    <div class="panel" id="panel-register">
-      <div class="section-label">注册身份</div>
-      <div class="role-selector">
-        <div class="role-card selected" onclick="selectRegRole(this, 'participant')">
-          <span class="role-icon">🎓</span>
-          <div class="role-name">选 手</div>
-          <div class="role-desc">参赛选手注册</div>
-        </div>
-        <div class="role-card" onclick="selectRegRole(this, 'organizer')">
-          <span class="role-icon">🏛️</span>
-          <div class="role-name">组 委</div>
-          <div class="role-desc">组委会成员注册</div>
-        </div>
+<!-- SCHEDULE / GALLERY -->
+<section id="schedule">
+  <div class="container">
+    <p class="section-label reveal">活动详情</p>
+    <h2 class="section-title reveal reveal-delay-1">活动<em>详细介绍</em></h2>
+    <div class="gallery-wrap reveal reveal-delay-2">
+
+      <!-- Thumbnail strip -->
+      <div class="gallery-thumbs" id="galleryThumbs">
+        <div class="gallery-thumb active" data-index="0"><img src="img-highlights.jpg" alt="亮点解析"></div>
+        <div class="gallery-thumb" data-index="1"><img src="img-opening.jpg" alt="开幕式"></div>
+        <div class="gallery-thumb" data-index="2"><img src="img-dusk.jpg" alt="暮色追逐/特别企划"></div>
+        <div class="gallery-thumb" data-index="3"><img src="img-course.jpg" alt="主题课程"></div>
+        <div class="gallery-thumb" data-index="4"><img src="img-bbq.jpg" alt="烧烤之夜"></div>
+        <div class="gallery-thumb" data-index="5"><img src="img-nighttour.jpg" alt="夜游一中/破冰活动"></div>
+        <div class="gallery-thumb" data-index="6"><img src="img-enterprise.jpg" alt="名企参观"></div>
+        <div class="gallery-thumb" data-index="7"><img src="img-gala.jpg" alt="纪念晚会"></div>
+        <div class="gallery-thumb" data-index="8"><img src="img-project.jpg" alt="Project设计"></div>
       </div>
 
-      <!-- Common fields -->
-      <div class="form-group">
-        <label>姓名</label>
-        <input type="text" id="regName" placeholder="请输入真实姓名">
-      </div>
-      <div class="form-group">
-        <label>邮箱地址</label>
-        <input type="email" id="regEmail" placeholder="注册后将发送确认邮件">
-      </div>
-      <div class="form-group">
-        <label>密码</label>
-        <div class="pwd-wrap">
-          <input type="password" id="regPwd" placeholder="8位以上，含字母和数字">
-          <button type="button" class="pwd-eye" onmouseenter="showPwd('regPwd')" onmouseleave="hidePwd('regPwd')" onclick="togglePwd('regPwd', this)" title="悬停预览 / 点击锁定显示">
-            <svg id="regPwd-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-      </div>
+      <!-- Main stage -->
+      <div class="gallery-stage" id="galleryStage">
 
-      <!-- Participant extra fields -->
-      <div class="extra-fields show" id="participantFields">
-        <div class="section-label">选手信息</div>
-        <div class="form-group">
-          <label>所在学校</label>
-          <input type="text" id="school" placeholder="请输入学校全称">
-        </div>
-        <div class="form-group">
-          <label>年级</label>
-          <select id="grade">
-            <option value="">请选择年级</option>
-            <option>初一</option>
-            <option>初二</option>
-            <option>初三</option>
-            <option>高一</option>
-            <option>高二</option>
-            <option>高三</option>
-            <option>大一</option>
-            <option>大二</option>
-            <option>大三</option>
-            <option>大四</option>
-            <option>研一</option>
-            <option>研二</option>
-            <option>研三</option>
-            <option>其他</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>身份证号码</label>
-          <input type="text" id="idCard" placeholder="请输入18位身份证号码" maxlength="18">
-          <div style="font-size:11px;color:var(--muted);margin-top:4px;">仅用于身份核验，加密存储</div>
-        </div>
-      </div>
-
-      <!-- 组委额外信息：仅需填写邀请码 -->
-      <div class="extra-fields" id="organizerFields">
-        <div class="section-label">组委信息</div>
-        <div class="form-group">
-          <label>邀请码</label>
-          <input type="text" id="inviteCode" placeholder="请输入组委邀请码">
-        </div>
-      </div>
-
-      <button class="btn-primary" id="regBtn" onclick="handleRegister()">提 交 注 册</button>
-    </div>
-
-    <!-- 选手仪表盘：笔试表单 -->
-    <div class="dashboard" id="dash-participant">
-      <div class="dash-header">
-        <div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">欢迎回来</div>
-          <div class="dash-title" id="dash-p-name">选手</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-          <span class="dash-role-badge">参赛选手</span>
-          <button class="logout-btn" onclick="logout()">退出登录</button>
-        </div>
-      </div>
-
-      <!-- 笔试表单 -->
-      <div style="padding:0 32px 32px;">
-
-        <!-- 个人信息 -->
-        <div class="section-label" style="margin-bottom:16px;">个人信息</div>
-
-        <div class="form-group">
-          <label>姓名</label>
-          <input type="text" id="ex-name" placeholder="请输入姓名">
-        </div>
-        <div class="form-group">
-          <label>性别</label>
-          <select id="ex-gender">
-            <option value="">请选择</option>
-            <option>男</option>
-            <option>女</option>
-            <option>其他</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>年龄</label>
-          <input type="number" id="ex-age" placeholder="请输入年龄" min="1" max="99" oninput="checkMinor()">
-        </div>
-        <div class="form-group">
-          <label>出生日期</label>
-          <div style="display:flex;gap:8px;">
-            <select id="ex-birth-month" style="flex:1;" onchange="updateDays()">
-              <option value="">月</option>
-              <option value="1">1月</option><option value="2">2月</option>
-              <option value="3">3月</option><option value="4">4月</option>
-              <option value="5">5月</option><option value="6">6月</option>
-              <option value="7">7月</option><option value="8">8月</option>
-              <option value="9">9月</option><option value="10">10月</option>
-              <option value="11">11月</option><option value="12">12月</option>
-            </select>
-            <select id="ex-birth-day" style="flex:1;">
-              <option value="">日</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>学校</label>
-          <input type="text" id="ex-school" placeholder="请输入学校全称">
-        </div>
-        <div class="form-group">
-          <label>年级</label>
-          <select id="ex-grade">
-            <option value="">请选择年级</option>
-            <option>初一</option><option>初二</option><option>初三</option>
-            <option>高一</option><option>高二</option><option>高三</option>
-            <option>大一</option><option>大二</option><option>大三</option><option>大四</option>
-            <option>研一</option><option>研二</option><option>研三</option>
-            <option>其他</option>
-          </select>
-        </div>
-
-        <!-- 电话（未成年额外要求家长电话） -->
-        <div class="form-group">
-          <label>本人电话</label>
-          <input type="tel" id="ex-phone" placeholder="请输入本人手机号" oninput="checkMinor()">
-        </div>
-        <div class="form-group" id="ex-parent-group" style="display:none;">
-          <label>家长电话 <span style="color:var(--red);font-size:11px;">（未成年必填）</span></label>
-          <input type="tel" id="ex-parent-phone" placeholder="请输入家长手机号">
-        </div>
-
-        <div class="section-label" style="margin:20px 0 16px;">紧急联系人</div>
-        <div class="form-group">
-          <label>紧急联系人姓名</label>
-          <input type="text" id="ex-emergency-name" placeholder="请输入紧急联系人姓名">
-        </div>
-        <div class="form-group">
-          <label>与本人关系</label>
-          <select id="ex-emergency-rel">
-            <option value="">请选择</option>
-            <option>父母</option><option>兄弟姐妹</option><option>祖父母/外祖父母</option>
-            <option>亲属</option><option>朋友</option><option>老师</option><option>其他</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>紧急联系人电话</label>
-          <input type="tel" id="ex-emergency-phone" placeholder="请输入紧急联系人手机号">
-        </div>
-
-        <div class="section-label" style="margin:20px 0 16px;">联系方式</div>
-        <div class="form-group">
-          <label>QQ 号</label>
-          <input type="text" id="ex-qq" placeholder="请输入 QQ 号">
-        </div>
-        <div class="form-group">
-          <label>微信号</label>
-          <input type="text" id="ex-wechat" placeholder="请输入微信号">
-        </div>
-        <div class="form-group">
-          <label>电子邮箱</label>
-          <input type="email" id="ex-email" placeholder="请输入常用邮箱地址">
-        </div>
-        <div class="form-group">
-          <label>身份证号</label>
-          <input type="text" id="ex-idcard" placeholder="请输入18位身份证号码" maxlength="18">
-        </div>
-        <div class="form-group">
-          <label>是否参加过 ayes</label>
-          <select id="ex-prev">
-            <option value="">请选择</option>
-            <option>是</option>
-            <option>否</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>忌口</label>
-          <input type="text" id="ex-diet" placeholder="如无请填&ldquo;无&rdquo;">
-        </div>
-        <div class="form-group">
-          <label>上衣尺码</label>
-          <select id="ex-size">
-            <option value="">请选择</option>
-            <option>XS</option><option>S</option><option>M</option>
-            <option>L</option><option>XL</option><option>XXL</option><option>XXXL</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>致敏原</label>
-          <input type="text" id="ex-allergy" placeholder="如无请填&ldquo;无&rdquo;">
-        </div>
-        <div class="form-group">
-          <label>有无心脏病等病史</label>
-          <select id="ex-medical">
-            <option value="">请选择</option>
-            <option>无</option>
-            <option>有（请在备注中说明）</option>
-          </select>
-        </div>
-
-        <!-- 老带新 -->
-        <div class="form-group">
-          <label>是否参与"老带新"优惠</label>
-          <select id="ex-referral" onchange="toggleReferral()">
-            <option value="">请选择</option>
-            <option>我是老选手</option>
-            <option>我是新选手</option>
-          </select>
-        </div>
-        <div id="ex-referral-detail" style="display:none;">
-          <div class="form-group">
-            <label>介绍人姓名及与你的关系</label>
-            <input type="text" id="ex-referral-info" placeholder="例：张三，同学">
+        <div class="gallery-slide active" data-index="0">
+          <img src="img-highlights.jpg" alt="亮点解析">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">AYES2026 · 活动亮点</p>
+            <p class="gallery-caption-title">亮点解析</p>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>希望与谁组队？</label>
-          <input type="text" id="ex-teammate" placeholder="请输入想组队人的姓名；如无请填&ldquo;无&rdquo;">
-        </div>
-
-        <!-- 问答 -->
-        <div class="section-label" style="margin:24px 0 16px;">问答</div>
-
-        <div class="form-group">
-          <label>1. 提到"光影"，你最先想到什么场景？</label>
-          <textarea id="ex-q1" rows="3" placeholder="请在此作答…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>2. 如果把每个人比作一束光，你认为你会是一束怎样的光？请简要描述。</label>
-          <textarea id="ex-q2" rows="3" placeholder="请在此作答…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>3. 在旅游中你更倾向于"特种兵式旅游"还是按照自己的习惯慢慢体验？</label>
-          <textarea id="ex-q3" rows="3" placeholder="请在此作答…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>4. 你认为在团队合作中什么最重要？请简要说明。</label>
-          <textarea id="ex-q4" rows="3" placeholder="请在此作答…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>5. 你会使用 AI 辅助你做什么？你希望可以学习哪类 AI 在什么方面的应用？</label>
-          <textarea id="ex-q5" rows="3" placeholder="请在此作答…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>6. 你怎样理解 AI 的"学习"与人的"学习"？</label>
-          <textarea id="ex-q6" rows="3" placeholder="请在此作答…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>7. 本次峰会关注 AI 如何赋能教育、文娱、城市公共福祉及产业等领域。请观察你的校园生活或社会现象，描述一个你认为切实存在的"痛点"（即大家觉得不方便、需要改进的问题），并设想一下，你会如何利用 AI 技术来解决这个问题？</label>
-          <textarea id="ex-q7" rows="5" placeholder="请在此作答…"></textarea>
-        </div>
-
-        <!-- 自评与描述 -->
-        <div class="section-label" style="margin:24px 0 16px;">自评与描述</div>
-
-        <div class="form-group">
-          <label>1. 请介绍一下你自己。</label>
-          <textarea id="ex-q8-intro" rows="4" placeholder="请在此作答…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>2. 编程基础描述</label>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.7;">你是否具备一定的编程基础（如 Python、C++、Java 等）？如果有，请简要描述你的掌握程度或曾经做过的项目 / 参加过的比赛（如信息学奥赛、机器人比赛等）。</div>
-          <textarea id="ex-q8" rows="4" placeholder="请在此作答…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>3. AI 工具使用经验</label>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.7;">在日常学习和生活中，你经常使用哪些 AI 辅助工具（如 ChatGPT、豆包、Midjourney、Cursor 等）？请举例说明你是如何运用它们解决具体问题的。</div>
-          <textarea id="ex-q9" rows="4" placeholder="请在此作答…"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>4. 核心角色选择</label>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.7;">在本次为期 5–6 天的「AI 初创公司模拟」项目中，如果团队需要分工，你认为自己最擅长 / 最希望担任以下哪个核心角色？（可多选并简要说明理由）</div>
-          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
-            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--ink);">
-              <input type="checkbox" id="ex-role-a" style="width:auto;margin-top:3px;accent-color:var(--ink);">
-              <span><strong>A. 技术应用与 Demo 开发</strong>——擅长逻辑、编程或 AI 工具调用</span>
-            </label>
-            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--ink);">
-              <input type="checkbox" id="ex-role-b" style="width:auto;margin-top:3px;accent-color:var(--ink);">
-              <span><strong>B. 商业逻辑与市场分析</strong>——擅长发现问题、市场调研、挖掘商业 / 社会价值</span>
-            </label>
-            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--ink);">
-              <input type="checkbox" id="ex-role-c" style="width:auto;margin-top:3px;accent-color:var(--ink);">
-              <span><strong>C. PPT 制作与视觉设计</strong>——擅长排版、美术、审美把控</span>
-            </label>
-            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:var(--ink);">
-              <input type="checkbox" id="ex-role-d" style="width:auto;margin-top:3px;accent-color:var(--ink);">
-              <span><strong>D. 现场路演与主讲答辩</strong>——擅长公众表达、逻辑陈述</span>
-            </label>
+        <div class="gallery-slide" data-index="1">
+          <img src="img-opening.jpg" alt="开幕式">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">Opening Ceremony</p>
+            <p class="gallery-caption-title">开幕式</p>
           </div>
-          <label style="font-size:12px;color:var(--muted);">请简要说明理由</label>
-          <textarea id="ex-q10" rows="3" placeholder="请简要说明你的选择理由…"></textarea>
         </div>
 
-        <div style="display:flex;gap:12px;margin-top:8px;">
-          <button class="btn-primary" id="saveExamBtn" onclick="handleExamSave()"
-            style="flex:1;background:var(--muted);letter-spacing:2px;">保 存 草 稿</button>
-          <button class="btn-primary" id="submitExamBtn" onclick="handleExamSubmit()"
-            style="flex:2;">提 交 笔 试</button>
+        <div class="gallery-slide" data-index="2">
+          <img src="img-dusk.jpg" alt="暮色追逐/特别企划">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">Elite Activities</p>
+            <p class="gallery-caption-title">暮色追逐 · 特别企划</p>
+          </div>
+        </div>
+
+        <div class="gallery-slide" data-index="3">
+          <img src="img-course.jpg" alt="主题课程">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">Thematic Course</p>
+            <p class="gallery-caption-title">主题课程</p>
+          </div>
+        </div>
+
+        <div class="gallery-slide" data-index="4">
+          <img src="img-bbq.jpg" alt="烧烤之夜">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">Barbecue Night</p>
+            <p class="gallery-caption-title">烧烤之夜</p>
+          </div>
+        </div>
+
+        <div class="gallery-slide" data-index="5">
+          <img src="img-nighttour.jpg" alt="夜游一中/破冰活动">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">Elite Activities</p>
+            <p class="gallery-caption-title">夜游一中 · 破冰活动</p>
+          </div>
+        </div>
+
+        <div class="gallery-slide" data-index="6">
+          <img src="img-enterprise.jpg" alt="名企参观">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">Visit Famous Enterprises</p>
+            <p class="gallery-caption-title">名企参观</p>
+          </div>
+        </div>
+
+        <div class="gallery-slide" data-index="7">
+          <img src="img-gala.jpg" alt="纪念晚会">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">Commemoration Party</p>
+            <p class="gallery-caption-title">纪念晚会</p>
+          </div>
+        </div>
+
+        <div class="gallery-slide" data-index="8">
+          <img src="img-project.jpg" alt="Project设计">
+          <div class="gallery-caption">
+            <p class="gallery-caption-label">Project Design</p>
+            <p class="gallery-caption-title">Project 设计</p>
+          </div>
+        </div>
+
+        <!-- Arrows -->
+        <button class="gallery-arrow prev" id="galleryPrev">&#8592;</button>
+        <button class="gallery-arrow next" id="galleryNext">&#8594;</button>
+
+        <!-- Counter -->
+        <div class="gallery-counter" id="galleryCounter">1 / 9</div>
+
+      </div><!-- /gallery-stage -->
+    </div><!-- /gallery-wrap -->
+  </div>
+</section>
+
+<!-- PAST -->
+<section id="past">
+  <div class="container">
+    <p class="section-label reveal">历届精彩</p>
+    <h2 class="section-title reveal reveal-delay-1">往届<em>回顾</em></h2>
+    <div style="margin-top:3rem;padding:4rem 0;border:1px dashed rgba(201,168,76,0.15);text-align:center;" class="reveal reveal-delay-2">
+      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);">COMING SOON · 内容建设中</p>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="container">
+    <p class="section-label reveal">口碑见证</p>
+    <h2 class="section-title reveal reveal-delay-1">往届<em>评价</em></h2>
+    <div style="margin-top:3rem;padding:4rem 0;border:1px dashed rgba(201,168,76,0.15);text-align:center;" class="reveal reveal-delay-2">
+      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);">COMING SOON · 内容建设中</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <p class="section-label reveal">解答疑惑</p>
+    <h2 class="section-title reveal reveal-delay-1">常见<em>问题</em></h2>
+    <div style="margin-top:3rem;padding:4rem 0;border:1px dashed rgba(201,168,76,0.15);text-align:center;" class="reveal reveal-delay-2">
+      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);">COMING SOON · 内容建设中</p>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section id="register">
+  <div class="register-bg"></div>
+  <div class="container">
+    <p class="section-label reveal">加入我们</p>
+    <h2 class="section-title reveal reveal-delay-1">立即<em>报名</em></h2>
+
+    <!-- Poster image -->
+    <div class="reveal reveal-delay-2" style="margin-top:3rem;display:flex;gap:3rem;align-items:flex-start;flex-wrap:wrap;">
+      <div style="flex:0 0 340px;max-width:100%;">
+        <img src="img-register.jpg" alt="AYES2026 报名海报"
+          style="width:100%;display:block;border:1px solid rgba(201,168,76,0.18);">
+      </div>
+      <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:2rem;padding-top:0.5rem;">
+        <!-- Coming soon placeholder -->
+        <div style="padding:3rem 2rem;border:1px dashed rgba(201,168,76,0.2);text-align:center;">
+          <p style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);margin-bottom:0.6rem;">COMING SOON · 报名通道建设中</p>
+          <p style="font-size:0.8rem;color:rgba(245,240,232,0.35);font-weight:300;">详细报名信息即将公布，敬请期待</p>
+        </div>
+        <!-- Exam link -->
+        <div style="border:1px solid rgba(201,168,76,0.2);padding:2rem;">
+          <p style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.3em;color:var(--gold);margin-bottom:0.8rem;">笔试试题</p>
+          <p style="font-size:0.85rem;color:rgba(245,240,232,0.6);font-weight:300;line-height:1.8;margin-bottom:1.5rem;">点击下方按钮前往笔试试题页面。</p>
+          <a href="https://ks.wjx.com/vm/Q2OYwF1.aspx#" target="_blank"
+            style="display:inline-block;background:var(--gold);color:var(--ink);padding:0.75rem 2rem;font-family:'Noto Serif SC',serif;font-size:0.85rem;font-weight:600;letter-spacing:0.15em;text-decoration:none;transition:background 0.3s;"
+            onmouseover="this.style.background='var(--gold-light)'"
+            onmouseout="this.style.background='var(--gold)'">
+            前往笔试 →
+          </a>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- ORGANIZER DASHBOARD -->
-    <div class="dashboard" id="dash-organizer">
-      <div class="dash-header">
-        <div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">管理后台</div>
-          <div class="dash-title" id="dash-o-name">李管理员</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-          <span class="dash-role-badge">组委会</span>
-          <button class="logout-btn" onclick="logout()">退出登录</button>
-        </div>
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">AYES<em style="font-style:italic;color:var(--gold-dim)">2026</em></div>
+      <div style="text-align:right;">
+        <p class="footer-copy">详情请咨询厦一实践官方QQ / 3434972583</p>
+        <p class="footer-copy" style="margin-top:0.5rem;">主办：福建省厦门第一中学</p>
+        <p class="footer-copy" style="margin-top:0.3rem;">协办：厦门大学信息学院软件工程系、字节跳动等</p>
+        <p class="footer-copy" style="margin-top:0.3rem;">指导单位：厦门市教育局、厦门市学生联合会</p>
       </div>
-
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-num">127</div>
-          <div class="stat-lbl">已报名</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--gold);">89</div>
-          <div class="stat-lbl">已确认</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num" style="color:var(--red);">38</div>
-          <div class="stat-lbl">待审核</div>
-        </div>
-      </div>
-
-      <div class="search-row">
-        <input type="text" id="searchInput" placeholder="搜索姓名、学校、编号…" oninput="filterTable()">
-        <button onclick="filterTable()">搜索</button>
-      </div>
-
-      <div class="table-wrap">
-        <table id="participantTable">
-          <thead>
-            <tr>
-              <th>编号</th>
-              <th>姓名</th>
-              <th>学校</th>
-              <th>类别</th>
-              <th>状态</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
-        </div>
-      </div>
-
-      <div class="footer">© xintx · 技术支持</div>
-    </div><!-- /.app -->
-  </div><!-- /#modal-card -->
-</div><!-- /#modal-overlay -->
+    </div>
+  </div>
+</footer>
 
 <script>
-  // ── 配置 ──────────────────────────────────────────
-  const API = 'http://localhost:8000';
+// ─── Cursor ───
+const ring = document.getElementById('cursorRing');
+const dot  = document.getElementById('cursorDot');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+(function animCursor(){
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  ring.style.left = rx+'px';
+  ring.style.top  = ry+'px';
+  requestAnimationFrame(animCursor);
+})();
+document.querySelectorAll('a,button,input,select,textarea,.faq-q,.news-card,.gallery-thumb,.gallery-arrow').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width='48px'; ring.style.height='48px'; ring.style.borderColor='rgba(201,168,76,0.6)'; });
+  el.addEventListener('mouseleave', () => { ring.style.width='32px'; ring.style.height='32px'; ring.style.borderColor='var(--gold)'; });
+});
 
-  // ── 状态 ──────────────────────────────────────────
-  let loginRole = 'participant';
-  let regRole   = 'participant';
-  let authToken = localStorage.getItem('token') || null;
+// ─── Progress ───
+const fill = document.getElementById('progressFill');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  fill.style.width = pct + '%';
+});
 
-  // ── 弹窗控制 ──────────────────────────────────────
-  // 打开弹窗：背景变暗模糊，弹窗从下方滑入，并切换到指定标签
-  function openModal(tab = 'login') {
-    document.getElementById('landing').classList.add('dimmed');
-    document.getElementById('modal-overlay').classList.add('open');
-    document.body.style.overflow = 'hidden'; // 防止背景滚动
-    showPanel(tab);
-    hideNotification();
-  }
-
-  // 关闭弹窗：恢复背景，弹窗收起（仪表盘状态下不关闭，保持登录状态）
-  function closeModal() {
-    // 若处于仪表盘（已登录），弹窗不关闭，背景保持变暗
-    const anyDash = document.querySelector('.dashboard.show');
-    if (anyDash) return;
-    document.getElementById('landing').classList.remove('dimmed');
-    document.getElementById('modal-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  // 点击弹窗遮罩空白区域时关闭（点到卡片内部不关闭）
-  function handleOverlayClick(e) {
-    if (e.target === document.getElementById('modal-overlay')) closeModal();
-  }
-
-  // ESC 键关闭弹窗
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-  // ── 通用请求封装 ──────────────────────────────────
-  async function api(method, path, body = null, auth = false) {
-    const headers = { 'Content-Type': 'application/json' };
-    if (auth && authToken) headers['Authorization'] = `Bearer ${authToken}`;
-    const res = await fetch(API + path, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : null,
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.detail || `请求失败 (${res.status})`);
-    return data;
-  }
-
-  // ── UI 工具 ───────────────────────────────────────
-  function setLoading(btnId, loading) {
-    const btn = document.getElementById(btnId);
-    if (!btn) return;
-    btn.disabled = loading;
-    btn.textContent = loading ? '请稍候…' : btn.dataset.label;
-  }
-
-  function showNotification(msg, type) {
-    const n = document.getElementById('notification');
-    n.textContent = msg;
-    n.className = 'notification ' + type + ' show';
-    n.style.display = 'block';
-    n.style.margin = '0 32px 0 32px';
-    clearTimeout(n._timer);
-    n._timer = setTimeout(() => hideNotification(), 6000);
-  }
-
-  function hideNotification() {
-    const n = document.getElementById('notification');
-    n.classList.remove('show');
-    n.style.display = 'none';
-  }
-
-  // 切换到指定 panel（login / register / forgot）
-  function showPanel(name) {
-    document.querySelectorAll('.tab-btn').forEach((b, i) => {
-      b.classList.toggle('active', name === 'login' ? i === 0 : name === 'register' ? i === 1 : false);
-    });
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById('panel-' + name);
-    if (target) target.classList.add('active');
-    hideNotification();
-  }
-
-  function switchTab(tab) { showPanel(tab); }
-
-  // 登录页身份选择：记录当前选择的角色，并更新卡片的选中高亮状态
-  function selectLoginRole(el, role) {
-    loginRole = role;
-    el.closest('.role-selector').querySelectorAll('.role-card')
-      .forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-  }
-
-  function selectRegRole(el, role) {
-    regRole = role;
-    el.closest('.role-selector').querySelectorAll('.role-card')
-      .forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    document.getElementById('participantFields').classList.toggle('show', role === 'participant');
-    document.getElementById('organizerFields').classList.toggle('show', role === 'organizer');
-  }
-
-  function showDashboard(role) {
-    // 登录成功后：隐藏标签栏和表单面板，显示仪表盘
-    // 弹窗保持打开，背景继续变暗，隐藏关闭按钮（防止误关）
-    document.querySelector('.tabs').style.display = 'none';
-    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-    document.getElementById('modal-close').style.display = 'none';
-    hideNotification();
-    document.getElementById('dash-' + role).classList.add('show');
-  }
-
-  // ── 身份证格式校验 ────────────────────────────────
-  function validateIdCard(id) {
-    return /^\d{17}[\dXx]$/.test(id);
-  }
-
-  // 密码显示控制：支持点击锁定显示 + 悬停临时预览两种方式
-  // locked 状态表示用户已点击切换，此时悬停不再干预
-  const pwdState = {}; // 每个密码框独立维护 { locked: bool }
-
-  function initPwd(id) {
-    if (!pwdState[id]) pwdState[id] = { locked: false };
-  }
-
-  // 鼠标移入：未锁定时临时显示密码
-  function showPwd(id) {
-    initPwd(id);
-    if (!pwdState[id].locked) document.getElementById(id).type = 'text';
-  }
-
-  // 鼠标移出：未锁定时恢复隐藏
-  function hidePwd(id) {
-    initPwd(id);
-    if (!pwdState[id].locked) document.getElementById(id).type = 'password';
-  }
-
-  // 点击切换：锁定/解锁显示状态，并同步更新图标和容器样式
-  function togglePwd(id, btn) {
-    initPwd(id);
-    const input = document.getElementById(id);
-    pwdState[id].locked = !pwdState[id].locked;
-    input.type = pwdState[id].locked ? 'text' : 'password';
-    // 锁定时给容器加 .locked，确保鼠标移开后眼睛仍然可见
-    btn.closest('.pwd-wrap').classList.toggle('locked', pwdState[id].locked);
-    const eyeOpen = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
-    const eyeOff  = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
-    btn.innerHTML = pwdState[id].locked ? eyeOff : eyeOpen;
-  }
-
-  // ── 注册 ──────────────────────────────────────────
-  async function handleRegister() {
-    const name  = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const pwd   = document.getElementById('regPwd').value;
-
-    if (!name || !email || !pwd) { showNotification('请填写所有必填信息', 'error'); return; }
-    if (pwd.length < 6) { showNotification('密码至少6位', 'error'); return; }
-
-    try {
-      setLoading('regBtn', true);
-      if (regRole === 'participant') {
-        const school = document.getElementById('school').value.trim();
-        const grade  = document.getElementById('grade').value;
-        const idCard = document.getElementById('idCard').value.trim();
-        if (!school)               { showNotification('请填写学校名称', 'error'); return; }
-        if (!grade)                { showNotification('请选择年级', 'error'); return; }
-        if (!validateIdCard(idCard)) { showNotification('请输入正确的18位身份证号码', 'error'); return; }
-        const res = await api('POST', '/auth/register/participant', {
-          email, name, password: pwd, school, grade, id_card: idCard
-        });
-        showNotification(`注册成功！确认邮件已发送至 ${email}，您的参赛编号：${res.reg_number}`, 'success');
-      } else {
-        const invite_code = document.getElementById('inviteCode').value.trim();
-        if (!invite_code) { showNotification('请填写邀请码', 'error'); return; }
-        await api('POST', '/auth/register/organizer', {
-          email, name, password: pwd, invite_code
-        });
-        showNotification('注册成功！确认邮件已发送至 ' + email, 'success');
-      }
-      setTimeout(() => showPanel('login'), 2500);
-    } catch (e) {
-      showNotification(e.message, 'error');
-    } finally {
-      setLoading('regBtn', false);
+// ─── Active nav ───
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a[data-section]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      navLinks.forEach(l => { l.classList.toggle('active', l.dataset.section === e.target.id); });
     }
-  }
-
-  // ── 登录（姓名 + 密码）────────────────────────────
-  async function handleLogin() {
-    const name = document.getElementById('loginName').value.trim();
-    const pwd  = document.getElementById('loginPwd').value;
-    if (!name || !pwd) { showNotification('请填写姓名和密码', 'error'); return; }
-
-    // 测试账号 admin_c：进入选手仪表盘
-    if (name === 'admin_c' && pwd === 'admin_c') {
-      showDashboard('participant');
-      document.getElementById('dash-p-name').textContent = 'admin_c';
-      loadExamDraft();
-      return;
-    }
-
-    // 测试账号 admin_o：进入组委仪表盘
-    if (name === 'admin_o' && pwd === 'admin_o') {
-      showDashboard('organizer');
-      document.getElementById('dash-o-name').textContent = 'admin_o';
-      renderTable([]);
-      return;
-    }
-
-    try {
-      setLoading('loginBtn', true);
-      // FastAPI OAuth2 标准要求用 application/x-www-form-urlencoded 格式，
-      // 并将用户名放在 username 字段；此处用真实姓名作为登录凭据
-      const res = await fetch(API + '/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ username: name, password: pwd }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || '登录失败');
-
-      if (data.role !== loginRole) {
-        throw new Error('身份与账号类型不符，请选择正确的登录身份');
-      }
-
-      authToken = data.access_token;
-      localStorage.setItem('token', authToken);
-      showDashboard(data.role);
-
-      if (data.role === 'participant') {
-        await loadParticipantDash(data.name);
-      } else {
-        await loadOrganizerDash(data.name);
-      }
-    } catch (e) {
-      showNotification(e.message, 'error');
-    } finally {
-      setLoading('loginBtn', false);
-    }
-  }
-
-  // ── 忘记密码 ──────────────────────────────────────
-  async function handleForgot() {
-    const name  = document.getElementById('forgotName').value.trim();
-    const email = document.getElementById('forgotEmail').value.trim();
-    if (!name || !email) { showNotification('请填写姓名和邮箱', 'error'); return; }
-
-    try {
-      setLoading('forgotBtn', true);
-      await api('POST', '/auth/forgot-password', { name, email });
-      showNotification('重置邮件已发送，请查收邮箱并按提示操作（有效期30分钟）', 'success');
-      document.getElementById('forgotName').value = '';
-      document.getElementById('forgotEmail').value = '';
-    } catch (e) {
-      showNotification(e.message, 'error');
-    } finally {
-      setLoading('forgotBtn', false);
-    }
-  }
-
-  // ── 选手仪表盘 ────────────────────────────────────
-  async function loadParticipantDash(name) {
-    document.getElementById('dash-p-name').textContent = name;
-    try {
-      const info = await api('GET', '/participant/me', null, true);
-      document.getElementById('dash-p-name').textContent = info.name;
-    } catch (e) {
-      showNotification('获取信息失败：' + e.message, 'error');
-    }
-    // 自动恢复上次保存的草稿
-    loadExamDraft();
-  }
-
-  // ── 组委仪表盘 ────────────────────────────────────
-  async function loadOrganizerDash(name) {
-    document.getElementById('dash-o-name').textContent = name;
-    try {
-      const stats = await api('GET', '/admin/stats', null, true);
-      const nums  = document.querySelectorAll('#dash-organizer .stat-num');
-      if (nums[0]) nums[0].textContent = stats.total;
-      if (nums[1]) nums[1].textContent = stats.confirmed;
-      if (nums[2]) nums[2].textContent = stats.pending;
-    } catch(e) {}
-    await fetchAndRenderTable();
-  }
-
-  async function fetchAndRenderTable(search = '') {
-    try {
-      const url = '/admin/participants' + (search ? `?search=${encodeURIComponent(search)}` : '');
-      renderTable(await api('GET', url, null, true));
-    } catch (e) {
-      showNotification('获取选手列表失败：' + e.message, 'error');
-    }
-  }
-
-  async function filterTable() {
-    await fetchAndRenderTable(document.getElementById('searchInput').value.trim());
-  }
-
-  function renderTable(data) {
-    const statusMap   = { pending: '待审核', confirmed: '已确认', rejected: '未通过' };
-    const statusClass = { pending: 'pending', confirmed: 'done', rejected: 'pending' };
-    document.getElementById('tableBody').innerHTML = data.map(p => `
-      <tr>
-        <td>${p.reg_number}</td>
-        <td>${p.name}</td>
-        <td>${p.school}</td>
-        <td>${p.grade || '—'}</td>
-        <td><span class="status-badge ${statusClass[p.status]}">${statusMap[p.status] || p.status}</span></td>
-        <td>
-          <button onclick="updateStatus('${p.reg_number}','confirmed')"
-            style="font-size:11px;padding:3px 8px;background:var(--ink);color:var(--cream);border:none;cursor:pointer;margin-right:4px;">确认</button>
-          <button onclick="updateStatus('${p.reg_number}','rejected')"
-            style="font-size:11px;padding:3px 8px;background:var(--red);color:#fff;border:none;cursor:pointer;">拒绝</button>
-        </td>
-      </tr>
-    `).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">暂无数据</td></tr>';
-  }
-
-  async function updateStatus(regNumber, status) {
-    try {
-      await api('PATCH', `/admin/participants/${regNumber}/status`, { status }, true);
-      showNotification('状态已更新', 'success');
-      await fetchAndRenderTable(document.getElementById('searchInput').value.trim());
-      const stats = await api('GET', '/admin/stats', null, true);
-      const nums  = document.querySelectorAll('#dash-organizer .stat-num');
-      if (nums[0]) nums[0].textContent = stats.total;
-      if (nums[1]) nums[1].textContent = stats.confirmed;
-      if (nums[2]) nums[2].textContent = stats.pending;
-    } catch (e) {
-      showNotification('更新失败：' + e.message, 'error');
-    }
-  }
-
-  // ── 复制链接 ──────────────────────────────────────
-  function copyLink() {
-    navigator.clipboard.writeText(document.getElementById('examLink').textContent)
-      .then(() => showNotification('链接已复制', 'success'));
-  }
-
-  // ── 退出登录 ──────────────────────────────────────
-  async function logout() {
-    try { await api('POST', '/auth/logout', null, true); } catch(e) {}
-    authToken = null;
-    localStorage.removeItem('token');
-    // 恢复标签栏、面板，隐藏仪表盘
-    document.querySelector('.tabs').style.display = 'flex';
-    document.querySelectorAll('.panel').forEach(p => { p.style.display = ''; p.classList.remove('active'); });
-    document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('show'));
-    document.getElementById('panel-login').classList.add('active');
-    document.getElementById('modal-close').style.display = '';
-    document.getElementById('loginName').value = '';
-    document.getElementById('loginPwd').value  = '';
-    // 关闭弹窗，回到落地页
-    document.getElementById('landing').classList.remove('dimmed');
-    document.getElementById('modal-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-
-  // 根据月份动态生成对应天数的选项（考虑大小月，2月固定28天）
-  function updateDays() {
-    const month = parseInt(document.getElementById('ex-birth-month').value) || 0;
-    const daySel = document.getElementById('ex-birth-day');
-    const cur = daySel.value;
-    const days = month === 2 ? 29 : [4,6,9,11].includes(month) ? 30 : 31;
-    daySel.innerHTML = '<option value="">日</option>';
-    for (let i = 1; i <= days; i++) {
-      const opt = document.createElement('option');
-      opt.value = i; opt.textContent = i + '日';
-      daySel.appendChild(opt);
-    }
-    if (cur && parseInt(cur) <= days) daySel.value = cur;
-  }
-
-  // 收集表单所有字段为对象
-  function collectExamData() {
-    return {
-      name: document.getElementById('ex-name').value.trim(),
-      gender: document.getElementById('ex-gender').value,
-      age: document.getElementById('ex-age').value,
-      birth_month: document.getElementById('ex-birth-month').value,
-      birth_day: document.getElementById('ex-birth-day').value,
-      school: document.getElementById('ex-school').value.trim(),
-      grade: document.getElementById('ex-grade').value,
-      phone: document.getElementById('ex-phone').value.trim(),
-      parent_phone: document.getElementById('ex-parent-phone').value.trim(),
-      emergency_name: document.getElementById('ex-emergency-name').value.trim(),
-      emergency_rel: document.getElementById('ex-emergency-rel').value,
-      emergency_phone: document.getElementById('ex-emergency-phone').value.trim(),
-      qq: document.getElementById('ex-qq').value.trim(),
-      wechat: document.getElementById('ex-wechat').value.trim(),
-      email: document.getElementById('ex-email').value.trim(),
-      id_card: document.getElementById('ex-idcard').value.trim(),
-      prev_ayes: document.getElementById('ex-prev').value,
-      diet: document.getElementById('ex-diet').value.trim(),
-      size: document.getElementById('ex-size').value,
-      allergy: document.getElementById('ex-allergy').value.trim(),
-      medical: document.getElementById('ex-medical').value,
-      referral: document.getElementById('ex-referral').value,
-      referral_info: document.getElementById('ex-referral-info').value.trim(),
-      teammate: document.getElementById('ex-teammate').value.trim(),
-      q1: document.getElementById('ex-q1').value.trim(),
-      q2: document.getElementById('ex-q2').value.trim(),
-      q3: document.getElementById('ex-q3').value.trim(),
-      q4: document.getElementById('ex-q4').value.trim(),
-      q5: document.getElementById('ex-q5').value.trim(),
-      q6: document.getElementById('ex-q6').value.trim(),
-      q7: document.getElementById('ex-q7').value.trim(),
-      q8_intro: document.getElementById('ex-q8-intro').value.trim(),
-      q8: document.getElementById('ex-q8').value.trim(),
-      q9: document.getElementById('ex-q9').value.trim(),
-      roles: ['a','b','c','d'].filter(r => document.getElementById('ex-role-'+r)?.checked),
-      q10: document.getElementById('ex-q10').value.trim(),
-    };
-  }
-
-  // 将草稿数据填回表单
-  function fillExamData(d) {
-    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
-    set('ex-name', d.name); set('ex-gender', d.gender); set('ex-age', d.age);
-    set('ex-birth-month', d.birth_month);
-    if (d.birth_month) { updateDays(); set('ex-birth-day', d.birth_day); }
-    set('ex-school', d.school); set('ex-grade', d.grade);
-    set('ex-phone', d.phone); set('ex-parent-phone', d.parent_phone);
-    set('ex-emergency-name', d.emergency_name);
-    set('ex-emergency-rel', d.emergency_rel);
-    set('ex-emergency-phone', d.emergency_phone);
-    set('ex-qq', d.qq); set('ex-wechat', d.wechat); set('ex-email', d.email);
-    set('ex-idcard', d.id_card); set('ex-prev', d.prev_ayes);
-    set('ex-diet', d.diet); set('ex-size', d.size);
-    set('ex-allergy', d.allergy); set('ex-medical', d.medical);
-    set('ex-referral', d.referral); set('ex-referral-info', d.referral_info);
-    set('ex-teammate', d.teammate);
-    set('ex-q1', d.q1); set('ex-q2', d.q2); set('ex-q3', d.q3); set('ex-q4', d.q4);
-    set('ex-q5', d.q5); set('ex-q6', d.q6); set('ex-q7', d.q7);
-    set('ex-q8-intro', d.q8_intro);
-    set('ex-q8', d.q8); set('ex-q9', d.q9);
-    if (Array.isArray(d.roles)) d.roles.forEach(r => {
-      const el = document.getElementById('ex-role-'+r); if (el) el.checked = true;
-    });
-    set('ex-q10', d.q10);
-    checkMinor(); toggleReferral();
-  }
-
-  // 保存草稿到 localStorage
-  function handleExamSave() {
-    const data = collectExamData();
-    localStorage.setItem('examDraft_' + (authToken || 'guest'), JSON.stringify(data));
-    showNotification('草稿已保存，下次登录后可继续填写', 'success');
-  }
-
-  // 登录后自动读取草稿
-  function loadExamDraft() {
-    const raw = localStorage.getItem('examDraft_' + (authToken || 'guest'));
-    if (raw) {
-      try { fillExamData(JSON.parse(raw)); } catch(e) {}
-    }
-  }
-
-  // ── 笔试表单逻辑 ──────────────────────────────────
-
-  // 根据年龄判断是否未成年，未成年时显示家长电话字段
-  function checkMinor() {
-    const age = parseInt(document.getElementById('ex-age')?.value) || 0;
-    document.getElementById('ex-parent-group').style.display = (age > 0 && age < 18) ? 'block' : 'none';
-  }
-
-  // 选择"是否参与老带新"时，显示或隐藏介绍人填写区
-  function toggleReferral() {
-    const val = document.getElementById('ex-referral').value;
-    document.getElementById('ex-referral-detail').style.display = val === '我是新选手' ? 'block' : 'none';
-  }
-
-  // 提交笔试表单
-  async function handleExamSubmit() {
-    const required = [
-      ['ex-name','姓名'],['ex-gender','性别'],['ex-age','年龄'],
-      ['ex-birth-month','出生月份'],['ex-birth-day','出生日期'],
-      ['ex-school','学校'],['ex-grade','年级'],['ex-phone','本人电话'],
-      ['ex-emergency-name','紧急联系人姓名'],['ex-emergency-rel','紧急联系人关系'],
-      ['ex-emergency-phone','紧急联系人电话'],
-      ['ex-qq','QQ号'],['ex-wechat','微信号'],['ex-email','电子邮箱'],
-      ['ex-idcard','身份证号'],['ex-prev','是否参加过ayes'],
-      ['ex-diet','忌口'],['ex-size','上衣尺码'],['ex-allergy','致敏原'],
-      ['ex-medical','病史'],['ex-referral','是否参与老带新'],
-      ['ex-teammate','希望与谁组队'],
-      ['ex-q1','第1题'],['ex-q2','第2题'],['ex-q3','第3题'],['ex-q4','第4题'],
-      ['ex-q5','第5题'],['ex-q6','第6题'],['ex-q7','第7题'],['ex-q8-intro','第8题'],
-      ['ex-q8','自评第1题'],['ex-q9','自评第2题'],
-      ['ex-q10','核心角色理由'],
-    ];
-    for (const [id, label] of required) {
-      const el = document.getElementById(id);
-      if (!el || !el.value.trim()) {
-        showNotification(`请填写：${label}`, 'error');
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
-    }
-    const age = parseInt(document.getElementById('ex-age').value);
-    if (age < 18 && !document.getElementById('ex-parent-phone').value.trim()) {
-      showNotification('未成年选手请填写家长电话', 'error'); return;
-    }
-    const selectedRoles = ['a','b','c','d'].filter(r => document.getElementById('ex-role-'+r)?.checked);
-    if (selectedRoles.length === 0) {
-      showNotification('请至少选择一个核心角色', 'error');
-      document.getElementById('ex-role-a')?.scrollIntoView({ behavior:'smooth', block:'center' });
-      return;
-    }
-    if (document.getElementById('ex-referral').value === '我是新选手' &&
-        !document.getElementById('ex-referral-info').value.trim()) {
-      showNotification('请填写介绍人信息', 'error'); return;
-    }
-
-    const payload = collectExamData();
-
-    try {
-      setLoading('submitExamBtn', true);
-      // 后续替换为: await api('POST', '/exam/submit', payload, true);
-      console.log('笔试提交内容：', payload);
-      // 提交成功后清除草稿
-      localStorage.removeItem('examDraft_' + (authToken || 'guest'));
-      document.getElementById('dash-participant').innerHTML = `
-        <div style="padding:48px 32px;text-align:center;">
-          <div style="font-size:40px;margin-bottom:20px;">✓</div>
-          <div style="font-family:'Noto Serif SC',serif;font-size:20px;color:var(--ink);margin-bottom:12px;">提交成功</div>
-          <div style="font-size:13px;color:var(--muted);line-height:1.9;">感谢你的参与！<br>组委会将在审核后通知你结果。</div>
-          <button onclick="logout()" style="margin-top:32px;padding:10px 28px;background:var(--ink);color:var(--cream);border:none;font-family:'Noto Serif SC',serif;font-size:14px;letter-spacing:2px;cursor:pointer;">返 回 首 页</button>
-        </div>`;
-    } catch(e) {
-      showNotification('提交失败：' + e.message, 'error');
-    } finally {
-      setLoading('submitExamBtn', false);
-    }
-  }
-
-  // 页面加载完成后，将每个主按钮的原始文字存入 data-label 属性，
-  // 以便按钮进入 loading 状态（显示"请稍候…"）后能正确恢复原文字
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.btn-primary').forEach(btn => {
-      btn.dataset.label = btn.textContent;
-    });
   });
+}, { threshold: 0.3 });
+sections.forEach(s => obs.observe(s));
+
+// ─── Reveal on scroll ───
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ─── Gallery ───
+(function initGallery(){
+  const slides  = document.querySelectorAll('.gallery-slide');
+  const thumbs  = document.querySelectorAll('.gallery-thumb');
+  const counter = document.getElementById('galleryCounter');
+  const total   = slides.length;
+  let current   = 0;
+  let autoTimer = null;
+
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    thumbs[current].classList.remove('active');
+    current = (idx + total) % total;
+    slides[current].classList.add('active');
+    thumbs[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+    // Scroll thumb into view
+    thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    resetAuto();
+  }
+
+  function resetAuto() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => goTo(current + 1), 5000);
+  }
+
+  // Thumbnail clicks
+  thumbs.forEach(th => {
+    th.addEventListener('click', () => goTo(parseInt(th.dataset.index)));
+  });
+
+  // Arrow buttons
+  document.getElementById('galleryPrev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('galleryNext').addEventListener('click', () => goTo(current + 1));
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if(e.key === 'ArrowLeft')  goTo(current - 1);
+    if(e.key === 'ArrowRight') goTo(current + 1);
+  });
+
+  // Touch / swipe
+  let touchStartX = 0;
+  const stage = document.getElementById('galleryStage');
+  stage.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+  });
+
+  // Pause on hover
+  stage.addEventListener('mouseenter', () => clearInterval(autoTimer));
+  stage.addEventListener('mouseleave', resetAuto);
+
+  resetAuto();
+})();
+
+// ─── FAQ ───
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  });
+});
+
+// ─── Form submit ───
+function handleSubmit(btn){
+  btn.textContent = '正在提交…';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '✓ 提交成功，期待与您相遇';
+    btn.style.background = 'var(--gold-dim)';
+  }, 1200);
+}
 </script>
 </body>
 </html>
