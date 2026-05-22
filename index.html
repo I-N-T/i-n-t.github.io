@@ -759,6 +759,7 @@
     }
     .container { padding: 0 1.2rem; }
     section { padding: 4rem 0; }
+    .hero-bg { background-size: contain; background-position: center center; background-repeat: no-repeat; }
     .gallery-stage { aspect-ratio: 1/1; max-height: 90vw; }
     .footer-inner { flex-direction: column; gap: 1.2rem; text-align: center; }
     .footer-inner > div { text-align: center !important; }
@@ -1012,17 +1013,16 @@
 
 <script>
 // ─── Hamburger menu ───
-const hamburger = document.getElementById('hamburger');
-const navLinks  = document.getElementById('navLinks');
+const hamburger   = document.getElementById('hamburger');
+const navMenu     = document.getElementById('navLinks');
 hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('open');
-  navLinks.classList.toggle('open');
+  navMenu.classList.toggle('open');
 });
-// Close menu when a link is clicked
-navLinks.querySelectorAll('a').forEach(a => {
+navMenu.querySelectorAll('a').forEach(a => {
   a.addEventListener('click', () => {
     hamburger.classList.remove('open');
-    navLinks.classList.remove('open');
+    navMenu.classList.remove('open');
   });
 });
 
@@ -1051,8 +1051,8 @@ window.addEventListener('scroll', () => {
 });
 
 // ─── Active nav ───
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a[data-section]');
+const sections  = document.querySelectorAll('section[id]');
+const navLinks  = document.querySelectorAll('.nav-links a[data-section]');
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if(e.isIntersecting){
