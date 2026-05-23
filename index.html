@@ -331,14 +331,16 @@
     background: #08090d;
     overflow: hidden;
   }
-  .gallery-slide {
+  .gallery-slide,
+  .past-slide {
     position: absolute; inset: 0;
     opacity: 0;
     transition: opacity 0.55s cubic-bezier(0.4,0,0.2,1);
     pointer-events: none;
     display: flex; align-items: center; justify-content: center;
   }
-  .gallery-slide.active {
+  .gallery-slide.active,
+  .past-slide.active {
     opacity: 1;
     pointer-events: auto;
   }
@@ -941,8 +943,46 @@
   <div class="container">
     <p class="section-label reveal">历届精彩</p>
     <h2 class="section-title reveal reveal-delay-1">往届<em>回顾</em></h2>
-    <div style="margin-top:3rem;padding:4rem 0;border:1px dashed rgba(201,168,76,0.15);text-align:center;" class="reveal reveal-delay-2">
-      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);">COMING SOON · 内容建设中</p>
+    <div class="gallery-wrap reveal reveal-delay-2">
+
+      <!-- Thumbnail strip -->
+      <div class="gallery-thumbs" id="pastThumbs">
+        <div class="gallery-thumb active" data-past="0"><img src="past-1.jpg" alt="往届图片1"></div>
+        <div class="gallery-thumb" data-past="1"><img src="past-2.jpg" alt="往届图片2"></div>
+        <div class="gallery-thumb" data-past="2"><img src="past-3.jpg" alt="往届图片3"></div>
+        <div class="gallery-thumb" data-past="3"><img src="past-4.jpg" alt="往届图片4"></div>
+        <div class="gallery-thumb" data-past="4"><img src="past-5.jpg" alt="往届图片5"></div>
+        <div class="gallery-thumb" data-past="5"><img src="past-6.jpg" alt="往届图片6"></div>
+        <div class="gallery-thumb" data-past="6"><img src="past-7.jpg" alt="往届图片7"></div>
+        <div class="gallery-thumb" data-past="7"><img src="past-8.jpg" alt="往届图片8"></div>
+        <div class="gallery-thumb" data-past="8"><img src="past-9.jpg" alt="往届图片9"></div>
+        <div class="gallery-thumb" data-past="9"><img src="past-10.jpg" alt="往届图片10"></div>
+        <div class="gallery-thumb" data-past="10"><img src="past-11.jpg" alt="往届图片11"></div>
+        <div class="gallery-thumb" data-past="11"><img src="past-12.jpg" alt="往届图片12"></div>
+        <div class="gallery-thumb" data-past="12"><img src="past-13.jpg" alt="往届图片13"></div>
+      </div>
+
+      <!-- Main stage -->
+      <div class="gallery-stage" id="pastStage">
+        <div class="past-slide active" data-past="0"><img src="past-1.jpg" alt="往届图片1"></div>
+        <div class="past-slide" data-past="1"><img src="past-2.jpg" alt="往届图片2"></div>
+        <div class="past-slide" data-past="2"><img src="past-3.jpg" alt="往届图片3"></div>
+        <div class="past-slide" data-past="3"><img src="past-4.jpg" alt="往届图片4"></div>
+        <div class="past-slide" data-past="4"><img src="past-5.jpg" alt="往届图片5"></div>
+        <div class="past-slide" data-past="5"><img src="past-6.jpg" alt="往届图片6"></div>
+        <div class="past-slide" data-past="6"><img src="past-7.jpg" alt="往届图片7"></div>
+        <div class="past-slide" data-past="7"><img src="past-8.jpg" alt="往届图片8"></div>
+        <div class="past-slide" data-past="8"><img src="past-9.jpg" alt="往届图片9"></div>
+        <div class="past-slide" data-past="9"><img src="past-10.jpg" alt="往届图片10"></div>
+        <div class="past-slide" data-past="10"><img src="past-11.jpg" alt="往届图片11"></div>
+        <div class="past-slide" data-past="11"><img src="past-12.jpg" alt="往届图片12"></div>
+        <div class="past-slide" data-past="12"><img src="past-13.jpg" alt="往届图片13"></div>
+
+        <button class="gallery-arrow prev" id="pastPrev">&#8592;</button>
+        <button class="gallery-arrow next" id="pastNext">&#8594;</button>
+        <div class="gallery-counter" id="pastCounter">1 / 13</div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1156,6 +1196,53 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   });
 
   // Pause on hover
+  stage.addEventListener('mouseenter', () => clearInterval(autoTimer));
+  stage.addEventListener('mouseleave', () => { if(isVisible) startAuto(); });
+})();
+
+// ─── Past Gallery ───
+(function initPastGallery(){
+  const slides  = document.querySelectorAll('.past-slide');
+  const thumbs  = document.querySelectorAll('[data-past]');
+  const pThumbs = document.querySelectorAll('#pastThumbs .gallery-thumb');
+  const counter = document.getElementById('pastCounter');
+  const stage   = document.getElementById('pastStage');
+  const total   = slides.length;
+  let current   = 0;
+  let autoTimer = null;
+  let isVisible = false;
+
+  function goTo(idx, fromUser) {
+    slides[current].classList.remove('active');
+    pThumbs[current].classList.remove('active');
+    current = (idx + total) % total;
+    slides[current].classList.add('active');
+    pThumbs[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+    if(fromUser) pThumbs[current].scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+    if(isVisible) resetAuto();
+  }
+
+  function startAuto() { clearInterval(autoTimer); autoTimer = setInterval(() => goTo(current + 1, false), 5000); }
+  function resetAuto() { clearInterval(autoTimer); if(isVisible) autoTimer = setInterval(() => goTo(current + 1, false), 5000); }
+
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      isVisible = e.isIntersecting;
+      isVisible ? startAuto() : clearInterval(autoTimer);
+    });
+  }, { threshold: 0.3 }).observe(stage);
+
+  pThumbs.forEach(th => th.addEventListener('click', () => goTo(parseInt(th.dataset.past), true)));
+  document.getElementById('pastPrev').addEventListener('click', () => goTo(current - 1, true));
+  document.getElementById('pastNext').addEventListener('click', () => goTo(current + 1, true));
+
+  let touchStartX = 0;
+  stage.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1), true);
+  });
   stage.addEventListener('mouseenter', () => clearInterval(autoTimer));
   stage.addEventListener('mouseleave', () => { if(isVisible) startAuto(); });
 })();
