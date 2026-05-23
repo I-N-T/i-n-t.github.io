@@ -1128,8 +1128,8 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
 // ─── Gallery ───
 (function initGallery(){
-  const slides  = document.querySelectorAll('.gallery-slide');
-  const thumbs  = document.querySelectorAll('.gallery-thumb');
+  const slides  = document.querySelectorAll('#galleryStage .gallery-slide');
+  const thumbs  = document.querySelectorAll('#galleryThumbs .gallery-thumb');
   const counter = document.getElementById('galleryCounter');
   const stage   = document.getElementById('galleryStage');
   const total   = slides.length;
@@ -1144,7 +1144,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     slides[current].classList.add('active');
     thumbs[current].classList.add('active');
     counter.textContent = (current + 1) + ' / ' + total;
-    // 只有用户主动操作时才滚动缩略图，自动轮播不触发
     if(fromUser) {
       thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
@@ -1161,43 +1160,36 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     if(isVisible) autoTimer = setInterval(() => goTo(current + 1, false), 5000);
   }
 
-  // 用 IntersectionObserver 监听图库是否在视口内
-  const visObs = new IntersectionObserver(entries => {
+  new IntersectionObserver(entries => {
     entries.forEach(e => {
       isVisible = e.isIntersecting;
-      if(isVisible) { startAuto(); }
-      else          { clearInterval(autoTimer); }
+      isVisible ? startAuto() : clearInterval(autoTimer);
     });
-  }, { threshold: 0.3 });
-  visObs.observe(stage);
+  }, { threshold: 0.2 }).observe(stage);
 
-  // Thumbnail clicks
   thumbs.forEach(th => {
     th.addEventListener('click', () => goTo(parseInt(th.dataset.index), true));
   });
 
-  // Arrow buttons
   document.getElementById('galleryPrev').addEventListener('click', () => goTo(current - 1, true));
   document.getElementById('galleryNext').addEventListener('click', () => goTo(current + 1, true));
 
-  // Keyboard（只在图库可见时响应）
+  // 键盘：stage 获得焦点或鼠标在其上时响应
+  let mouseOver = false;
+  stage.addEventListener('mouseenter', () => { mouseOver = true;  clearInterval(autoTimer); });
+  stage.addEventListener('mouseleave', () => { mouseOver = false; if(isVisible) startAuto(); });
   document.addEventListener('keydown', e => {
-    if(!isVisible) return;
-    if(e.key === 'ArrowLeft')  goTo(current - 1, true);
-    if(e.key === 'ArrowRight') goTo(current + 1, true);
+    if(!isVisible && !mouseOver) return;
+    if(e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1, true); }
+    if(e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1, true); }
   });
 
-  // Touch / swipe
   let touchStartX = 0;
   stage.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
   stage.addEventListener('touchend',   e => {
     const dx = e.changedTouches[0].clientX - touchStartX;
     if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1), true);
   });
-
-  // Pause on hover
-  stage.addEventListener('mouseenter', () => clearInterval(autoTimer));
-  stage.addEventListener('mouseleave', () => { if(isVisible) startAuto(); });
 })();
 
 // ─── Past Gallery ───
