@@ -122,21 +122,29 @@
     position: relative;
     overflow: hidden;
     padding-top: 0;
+    background: #0D0D0D;
   }
   .hero-bg {
-    position: absolute; inset: 0;
-    background: url('img-bg.jpg') center top / cover no-repeat;
-    top: var(--nav-h);
+    position: absolute;
+    top: var(--nav-h); left: 0; right: 0; bottom: 0;
+    display: flex; align-items: flex-start; justify-content: center;
+    overflow: hidden;
+  }
+  .hero-bg img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    object-position: top center;
   }
   .hero-bg::after {
     content: '';
     position: absolute; inset: 0;
     background: linear-gradient(
       180deg,
-      rgba(0,0,0,0.18) 0%,
-      rgba(0,0,0,0.02) 40%,
-      rgba(0,0,0,0.02) 70%,
-      rgba(0,0,0,0.45) 100%
+      rgba(0,0,0,0.05) 0%,
+      rgba(0,0,0,0.0) 40%,
+      rgba(0,0,0,0.3) 100%
     );
   }
   @keyframes fadeUp {
@@ -768,7 +776,6 @@
     }
     .container { padding: 0 1.2rem; }
     section { padding: 4rem 0; }
-    .hero-bg { background-size: cover; background-position: center top; background-repeat: no-repeat; }
     .gallery-stage { aspect-ratio: 1/1; max-height: 90vw; }
     .footer-inner { flex-direction: column; gap: 1.2rem; text-align: center; }
     .footer-inner > div { text-align: center !important; }
@@ -809,7 +816,7 @@
 
 <!-- HERO -->
 <section id="home">
-  <div class="hero-bg"></div>
+  <div class="hero-bg"><img src="img-bg.jpg" alt="AYES2026"></div>
   <div class="hero-scroll">
     <span>SCROLL</span>
     <div class="scroll-line"></div>
