@@ -349,6 +349,12 @@
     object-fit: contain;
     display: block;
   }
+  .past-slide img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
 
   /* Caption overlay */
   .gallery-caption {
@@ -765,6 +771,14 @@
     .gallery-stage { aspect-ratio: 1/1; max-height: 90vw; }
     .footer-inner { flex-direction: column; gap: 1.2rem; text-align: center; }
     .footer-inner > div { text-align: center !important; }
+  }
+  /* Past gallery stage - landscape photos */
+  #pastStage {
+    aspect-ratio: 16 / 9;
+    max-height: 60vh;
+  }
+  @media (max-width: 860px) {
+    #pastStage { aspect-ratio: 4 / 3; max-height: 75vw; }
   }
 </style></head>
 <body>
@@ -1229,14 +1243,22 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   document.getElementById('pastPrev').addEventListener('click', () => goTo(current - 1, true));
   document.getElementById('pastNext').addEventListener('click', () => goTo(current + 1, true));
 
+  // 键盘：仅在鼠标悬停于图库时响应，避免与页面滚动条冲突
+  let mouseOver = false;
+  stage.addEventListener('mouseenter', () => { mouseOver = true;  clearInterval(autoTimer); });
+  stage.addEventListener('mouseleave', () => { mouseOver = false; if(isVisible) startAuto(); });
+  document.addEventListener('keydown', e => {
+    if(!mouseOver) return;
+    if(e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1, true); }
+    if(e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1, true); }
+  });
+
   let touchStartX = 0;
   stage.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
   stage.addEventListener('touchend',   e => {
     const dx = e.changedTouches[0].clientX - touchStartX;
     if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1), true);
   });
-  stage.addEventListener('mouseenter', () => clearInterval(autoTimer));
-  stage.addEventListener('mouseleave', () => { if(isVisible) startAuto(); });
 })();
 
 // ─── FAQ ───
