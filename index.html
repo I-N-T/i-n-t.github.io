@@ -815,8 +815,10 @@
   <div class="container">
     <p class="section-label reveal">关于峰会</p>
     <h2 class="section-title reveal reveal-delay-1">活动<em>简介</em></h2>
-    <div style="margin-top:3rem;padding:4rem 0;border:1px dashed rgba(201,168,76,0.15);text-align:center;" class="reveal reveal-delay-2">
-      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--muted);">COMING SOON · 内容建设中</p>
+    <div style="margin-top:3rem;" class="reveal reveal-delay-2">
+      <p style="font-size:0.95rem;line-height:2.2;color:rgba(245,240,232,0.72);font-weight:300;max-width:860px;">
+        在 AYES 2026，AI 不再是停留在理论上的概念，而是你解决真实问题的武器。在这六天里，我们将打造一个集「前沿学术交流、极限项目开发、精英社交博弈」于一体的硬核实战平台。你将与顶尖同龄人组建初创团队，调用大模型等前沿 AI 工具赋能产业场景（涵盖智慧校园、绿色城市与数字文娱）。结合名师讲座与沉浸式团队活动，你们需要在协作中完成从痛点洞察、产品 Demo 开发到模拟竞标路演的完整闭环。告别「被动体验」，开启「主动创造」——由你来定义 AI 的应用边界与商业价值。
+      </p>
     </div>
   </div>
 </section>
@@ -1073,56 +1075,73 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   const slides  = document.querySelectorAll('.gallery-slide');
   const thumbs  = document.querySelectorAll('.gallery-thumb');
   const counter = document.getElementById('galleryCounter');
+  const stage   = document.getElementById('galleryStage');
   const total   = slides.length;
   let current   = 0;
   let autoTimer = null;
+  let isVisible = false;
 
-  function goTo(idx) {
+  function goTo(idx, fromUser) {
     slides[current].classList.remove('active');
     thumbs[current].classList.remove('active');
     current = (idx + total) % total;
     slides[current].classList.add('active');
     thumbs[current].classList.add('active');
     counter.textContent = (current + 1) + ' / ' + total;
-    // Scroll thumb into view
-    thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    resetAuto();
+    // 只有用户主动操作时才滚动缩略图，自动轮播不触发
+    if(fromUser) {
+      thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+    if(isVisible) resetAuto();
+  }
+
+  function startAuto() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => goTo(current + 1, false), 5000);
   }
 
   function resetAuto() {
     clearInterval(autoTimer);
-    autoTimer = setInterval(() => goTo(current + 1), 5000);
+    if(isVisible) autoTimer = setInterval(() => goTo(current + 1, false), 5000);
   }
+
+  // 用 IntersectionObserver 监听图库是否在视口内
+  const visObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      isVisible = e.isIntersecting;
+      if(isVisible) { startAuto(); }
+      else          { clearInterval(autoTimer); }
+    });
+  }, { threshold: 0.3 });
+  visObs.observe(stage);
 
   // Thumbnail clicks
   thumbs.forEach(th => {
-    th.addEventListener('click', () => goTo(parseInt(th.dataset.index)));
+    th.addEventListener('click', () => goTo(parseInt(th.dataset.index), true));
   });
 
   // Arrow buttons
-  document.getElementById('galleryPrev').addEventListener('click', () => goTo(current - 1));
-  document.getElementById('galleryNext').addEventListener('click', () => goTo(current + 1));
+  document.getElementById('galleryPrev').addEventListener('click', () => goTo(current - 1, true));
+  document.getElementById('galleryNext').addEventListener('click', () => goTo(current + 1, true));
 
-  // Keyboard
+  // Keyboard（只在图库可见时响应）
   document.addEventListener('keydown', e => {
-    if(e.key === 'ArrowLeft')  goTo(current - 1);
-    if(e.key === 'ArrowRight') goTo(current + 1);
+    if(!isVisible) return;
+    if(e.key === 'ArrowLeft')  goTo(current - 1, true);
+    if(e.key === 'ArrowRight') goTo(current + 1, true);
   });
 
   // Touch / swipe
   let touchStartX = 0;
-  const stage = document.getElementById('galleryStage');
   stage.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
   stage.addEventListener('touchend',   e => {
     const dx = e.changedTouches[0].clientX - touchStartX;
-    if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+    if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1), true);
   });
 
   // Pause on hover
   stage.addEventListener('mouseenter', () => clearInterval(autoTimer));
-  stage.addEventListener('mouseleave', resetAuto);
-
-  resetAuto();
+  stage.addEventListener('mouseleave', () => { if(isVisible) startAuto(); });
 })();
 
 // ─── FAQ ───
