@@ -942,16 +942,13 @@
             <img src="img-project.jpg" alt="Project设计">
           </div>
 
-          <!-- Arrows -->
+        <!-- Arrows -->
           <button class="gallery-arrow prev" id="galleryPrev">&#8592;</button>
           <button class="gallery-arrow next" id="galleryNext">&#8594;</button>
           <!-- Counter -->
           <div class="gallery-counter" id="galleryCounter">1 / 9</div>
 
         </div><!-- /gallery-stage-img -->
-
-        <!-- Captions below (index 0 has no caption) -->
-        <div id="galleryCaption" style="min-height:3rem;padding:0.9rem 1rem 0.4rem;text-align:center;"></div>
 
       </div><!-- /gallery-stage -->
     </div><!-- /gallery-wrap -->
@@ -1152,32 +1149,10 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   const thumbs  = document.querySelectorAll('#galleryThumbs .gallery-thumb');
   const counter = document.getElementById('galleryCounter');
   const stage   = document.getElementById('galleryStage');
-  const captionEl = document.getElementById('galleryCaption');
   const total   = slides.length;
   let current   = 0;
   let autoTimer = null;
   let isVisible = false;
-
-  // Caption data — index 0 has no caption
-  const captions = [
-    null,
-    { label: 'Opening Ceremony',        title: '开幕式' },
-    { label: 'Elite Activities',         title: '暮色追逐 · 特别企划' },
-    { label: 'Thematic Course',          title: '主题课程' },
-    { label: 'Barbecue Night',           title: '烧烤之夜' },
-    { label: 'Elite Activities',         title: '夜游一中 · 破冰活动' },
-    { label: 'Visit Famous Enterprises', title: '名企参观' },
-    { label: 'Commemoration Party',      title: '纪念晚会' },
-    { label: 'Project Design',           title: 'Project 设计' },
-  ];
-
-  function renderCaption(idx) {
-    const c = captions[idx];
-    if (!c) { captionEl.innerHTML = ''; return; }
-    captionEl.innerHTML =
-      `<p class="gallery-caption-label">${c.label}</p>` +
-      `<p class="gallery-caption-title">${c.title}</p>`;
-  }
 
   function goTo(idx, fromUser) {
     slides[current].classList.remove('active');
@@ -1186,7 +1161,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     slides[current].classList.add('active');
     thumbs[current].classList.add('active');
     counter.textContent = (current + 1) + ' / ' + total;
-    renderCaption(current);
     if(fromUser) {
       thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
@@ -1232,8 +1206,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     const dx = e.changedTouches[0].clientX - touchStartX;
     if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1), true);
   });
-
-  renderCaption(0);
 })();
 
 // ─── Past Gallery ───
