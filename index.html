@@ -129,6 +129,7 @@
     top: var(--nav-h); left: 0; right: 0; bottom: 0;
     display: flex; align-items: flex-start; justify-content: center;
     overflow: hidden;
+    margin-top: -2rem; /* 电脑端图片上移 */
   }
   .hero-bg img {
     width: 100%;
@@ -160,6 +161,7 @@
     letter-spacing: 0.25em;
     color: rgba(201,168,76,0.5);
     animation: fadeUp 1.2s 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    z-index: 2;
   }
   .scroll-line {
     width: 1px; height: 50px;
@@ -776,6 +778,10 @@
     }
     .container { padding: 0 1.2rem; }
     section { padding: 4rem 0; }
+    #home { min-height: auto; }
+    .hero-bg { margin-top: 0; } /* 移动端不需要额外上移 */
+    .hero-scroll { bottom: 0.8rem; } /* 移动端 scroll 标识上移 */
+    #news { margin-top: 0; padding-top: 2.5rem; } /* 移动端下方内容同步上移 */
     .gallery-stage { aspect-ratio: 1/1; max-height: 90vw; }
     .footer-inner { flex-direction: column; gap: 1.2rem; text-align: center; }
     .footer-inner > div { text-align: center !important; }
