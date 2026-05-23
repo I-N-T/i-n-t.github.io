@@ -339,9 +339,15 @@
   .gallery-stage {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    max-height: 80vh;
     background: #08090d;
+    overflow: hidden;
+  }
+  /* image area keeps square ratio */
+  .gallery-stage-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: 72vh;
+    position: relative;
     overflow: hidden;
   }
   .gallery-slide,
@@ -369,23 +375,22 @@
     display: block;
   }
 
-  /* Caption overlay */
+  /* Caption below image */
   .gallery-caption {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 2.5rem 2.5rem 2rem;
-    background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, transparent 100%);
-    transform: translateY(4px);
-    transition: transform 0.4s;
+    padding: 0.9rem 0.5rem 0.2rem;
+    background: none;
+    transform: none;
+    transition: none;
+    text-align: center;
   }
-  .gallery-slide.active .gallery-caption { transform: translateY(0); }
+  .gallery-slide.active .gallery-caption { transform: none; }
   .gallery-caption-label {
     font-family: 'Space Mono', monospace;
     font-size: 0.6rem;
     letter-spacing: 0.3em;
     color: var(--gold);
     text-transform: uppercase;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.3rem;
   }
   .gallery-caption-title {
     font-family: 'Cormorant Garamond', serif;
@@ -889,95 +894,64 @@
         <div class="gallery-thumb active" data-index="0"><img src="img-highlights.jpg" alt="亮点解析"></div>
         <div class="gallery-thumb" data-index="1"><img src="img-opening.jpg" alt="开幕式"></div>
         <div class="gallery-thumb" data-index="2"><img src="img-dusk.jpg" alt="暮色追逐/特别企划"></div>
-        <div class="gallery-thumb" data-index="3"><img src="img-course.jpg" alt="主题课程"></div>
+        <div class="gallery-thumb" data-index="3"><img src="img-course_enterprise.jpg" alt="主题课程"></div>
         <div class="gallery-thumb" data-index="4"><img src="img-bbq.jpg" alt="烧烤之夜"></div>
-        <div class="gallery-thumb" data-index="5"><img src="img-nighttour.jpg" alt="夜游一中/破冰活动"></div>
-        <div class="gallery-thumb" data-index="6"><img src="img-enterprise.jpg" alt="名企参观"></div>
+        <div class="gallery-thumb" data-index="5"><img src="img-gallery.jpg" alt="夜游一中/破冰活动"></div>
+        <div class="gallery-thumb" data-index="6"><img src="img-game.jpg" alt="名企参观"></div>
         <div class="gallery-thumb" data-index="7"><img src="img-gala.jpg" alt="纪念晚会"></div>
         <div class="gallery-thumb" data-index="8"><img src="img-project.jpg" alt="Project设计"></div>
       </div>
 
       <!-- Main stage -->
       <div class="gallery-stage" id="galleryStage">
+        <div class="gallery-stage-img">
 
-        <div class="gallery-slide active" data-index="0">
-          <img src="img-highlights.jpg" alt="亮点解析">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Amoy Youth Elite Summit · 2026</p>
-            <p class="gallery-caption-title">亮点解析</p>
+          <div class="gallery-slide active" data-index="0">
+            <img src="img-highlights.jpg" alt="亮点解析">
           </div>
-        </div>
 
-        <div class="gallery-slide" data-index="1">
-          <img src="img-opening.jpg" alt="开幕式">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Opening Ceremony</p>
-            <p class="gallery-caption-title">开幕式</p>
+          <div class="gallery-slide" data-index="1">
+            <img src="img-opening.jpg" alt="开幕式">
           </div>
-        </div>
 
-        <div class="gallery-slide" data-index="2">
-          <img src="img-dusk.jpg" alt="暮色追逐/特别企划">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Elite Activities</p>
-            <p class="gallery-caption-title">暮色追逐 · 特别企划</p>
+          <div class="gallery-slide" data-index="2">
+            <img src="img-dusk.jpg" alt="暮色追逐/特别企划">
           </div>
-        </div>
 
-        <div class="gallery-slide" data-index="3">
-          <img src="img-course.jpg" alt="主题课程">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Thematic Course</p>
-            <p class="gallery-caption-title">主题课程</p>
+          <div class="gallery-slide" data-index="3">
+            <img src="img-course_enterprise.jpg" alt="主题课程">
           </div>
-        </div>
 
-        <div class="gallery-slide" data-index="4">
-          <img src="img-bbq.jpg" alt="烧烤之夜">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Barbecue Night</p>
-            <p class="gallery-caption-title">烧烤之夜</p>
+          <div class="gallery-slide" data-index="4">
+            <img src="img-bbq.jpg" alt="烧烤之夜">
           </div>
-        </div>
 
-        <div class="gallery-slide" data-index="5">
-          <img src="img-nighttour.jpg" alt="夜游一中/破冰活动">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Elite Activities</p>
-            <p class="gallery-caption-title">夜游一中 · 破冰活动</p>
+          <div class="gallery-slide" data-index="5">
+            <img src="img-gallery.jpg" alt="夜游一中/破冰活动">
           </div>
-        </div>
 
-        <div class="gallery-slide" data-index="6">
-          <img src="img-enterprise.jpg" alt="名企参观">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Visit Famous Enterprises</p>
-            <p class="gallery-caption-title">名企参观</p>
+          <div class="gallery-slide" data-index="6">
+            <img src="img-game.jpg" alt="名企参观">
           </div>
-        </div>
 
-        <div class="gallery-slide" data-index="7">
-          <img src="img-gala.jpg" alt="纪念晚会">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Commemoration Party</p>
-            <p class="gallery-caption-title">纪念晚会</p>
+          <div class="gallery-slide" data-index="7">
+            <img src="img-gala.jpg" alt="纪念晚会">
           </div>
-        </div>
 
-        <div class="gallery-slide" data-index="8">
-          <img src="img-project.jpg" alt="Project设计">
-          <div class="gallery-caption">
-            <p class="gallery-caption-label">Project Design</p>
-            <p class="gallery-caption-title">Project 设计</p>
+          <div class="gallery-slide" data-index="8">
+            <img src="img-project.jpg" alt="Project设计">
           </div>
-        </div>
 
-        <!-- Arrows -->
-        <button class="gallery-arrow prev" id="galleryPrev">&#8592;</button>
-        <button class="gallery-arrow next" id="galleryNext">&#8594;</button>
+          <!-- Arrows -->
+          <button class="gallery-arrow prev" id="galleryPrev">&#8592;</button>
+          <button class="gallery-arrow next" id="galleryNext">&#8594;</button>
+          <!-- Counter -->
+          <div class="gallery-counter" id="galleryCounter">1 / 9</div>
 
-        <!-- Counter -->
-        <div class="gallery-counter" id="galleryCounter">1 / 9</div>
+        </div><!-- /gallery-stage-img -->
+
+        <!-- Captions below (index 0 has no caption) -->
+        <div id="galleryCaption" style="min-height:3rem;padding:0.9rem 1rem 0.4rem;text-align:center;"></div>
 
       </div><!-- /gallery-stage -->
     </div><!-- /gallery-wrap -->
@@ -1178,10 +1152,32 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   const thumbs  = document.querySelectorAll('#galleryThumbs .gallery-thumb');
   const counter = document.getElementById('galleryCounter');
   const stage   = document.getElementById('galleryStage');
+  const captionEl = document.getElementById('galleryCaption');
   const total   = slides.length;
   let current   = 0;
   let autoTimer = null;
   let isVisible = false;
+
+  // Caption data — index 0 has no caption
+  const captions = [
+    null,
+    { label: 'Opening Ceremony',        title: '开幕式' },
+    { label: 'Elite Activities',         title: '暮色追逐 · 特别企划' },
+    { label: 'Thematic Course',          title: '主题课程' },
+    { label: 'Barbecue Night',           title: '烧烤之夜' },
+    { label: 'Elite Activities',         title: '夜游一中 · 破冰活动' },
+    { label: 'Visit Famous Enterprises', title: '名企参观' },
+    { label: 'Commemoration Party',      title: '纪念晚会' },
+    { label: 'Project Design',           title: 'Project 设计' },
+  ];
+
+  function renderCaption(idx) {
+    const c = captions[idx];
+    if (!c) { captionEl.innerHTML = ''; return; }
+    captionEl.innerHTML =
+      `<p class="gallery-caption-label">${c.label}</p>` +
+      `<p class="gallery-caption-title">${c.title}</p>`;
+  }
 
   function goTo(idx, fromUser) {
     slides[current].classList.remove('active');
@@ -1190,6 +1186,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     slides[current].classList.add('active');
     thumbs[current].classList.add('active');
     counter.textContent = (current + 1) + ' / ' + total;
+    renderCaption(current);
     if(fromUser) {
       thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
@@ -1220,7 +1217,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   document.getElementById('galleryPrev').addEventListener('click', () => goTo(current - 1, true));
   document.getElementById('galleryNext').addEventListener('click', () => goTo(current + 1, true));
 
-  // 键盘：stage 获得焦点或鼠标在其上时响应
   let mouseOver = false;
   stage.addEventListener('mouseenter', () => { mouseOver = true;  clearInterval(autoTimer); });
   stage.addEventListener('mouseleave', () => { mouseOver = false; if(isVisible) startAuto(); });
@@ -1236,6 +1232,8 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     const dx = e.changedTouches[0].clientX - touchStartX;
     if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1), true);
   });
+
+  renderCaption(0);
 })();
 
 // ─── Past Gallery ───
