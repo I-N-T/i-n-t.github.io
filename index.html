@@ -127,11 +127,12 @@
     padding-top: 0;
   }
   .hero-bg {
-    width: 85%;          /* 电脑端缩小至85%宽，留出两侧空间 */
-    max-width: 1200px;
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100vh - var(--nav-h));
     aspect-ratio: 1812 / 1279;
     position: relative;
-    margin: 0 auto 0;
+    margin: var(--nav-h) auto 0;
     flex-shrink: 0;
   }
   .hero-bg img {
