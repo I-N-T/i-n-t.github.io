@@ -129,14 +129,12 @@
     top: var(--nav-h); left: 0; right: 0; bottom: 0;
     display: flex; align-items: flex-start; justify-content: center;
     overflow: hidden;
-    margin-top: -2rem; /* 电脑端图片上移 */
+    transform: translateY(-5%); /* 电脑端图片上移 */
   }
   .hero-bg img {
     width: 100%;
     height: auto;
     display: block;
-    object-fit: contain;
-    object-position: top center;
   }
   .hero-bg::after {
     content: '';
@@ -778,10 +776,20 @@
     }
     .container { padding: 0 1.2rem; }
     section { padding: 4rem 0; }
-    #home { min-height: auto; }
-    .hero-bg { margin-top: 0; } /* 移动端不需要额外上移 */
-    .hero-scroll { bottom: 0.8rem; } /* 移动端 scroll 标识上移 */
-    #news { margin-top: 0; padding-top: 2.5rem; } /* 移动端下方内容同步上移 */
+    #home {
+      min-height: auto;
+      padding-top: var(--nav-h);
+      display: block;
+    }
+    .hero-bg {
+      position: relative;
+      top: 0; left: 0; right: 0; bottom: auto;
+      transform: none;
+      width: 100%;
+    }
+    .hero-bg img { width: 100%; height: auto; display: block; }
+    .hero-bg::after { display: none; }
+    .hero-scroll { position: relative; bottom: auto; left: auto; transform: none; margin: 0.5rem auto 1rem; }
     .gallery-stage { aspect-ratio: 1/1; max-height: 90vw; }
     .footer-inner { flex-direction: column; gap: 1.2rem; text-align: center; }
     .footer-inner > div { text-align: center !important; }
