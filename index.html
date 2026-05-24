@@ -132,6 +132,7 @@
     position: relative;
     margin: var(--nav-h) auto 0;
     flex-shrink: 0;
+    overflow: hidden;
   }
   .hero-bg img {
     width: 100%;
@@ -161,19 +162,14 @@
     color: rgba(201,168,76,0.5);
     pointer-events: none;
     z-index: 2;
-  }
-  @media (min-width: 861px) {
-    .hero-scroll {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-    }
+    position: absolute;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
   }
   @media (max-width: 860px) {
     .hero-scroll {
-      position: relative;
-      margin: 0.8rem auto 0.5rem;
+      bottom: 1rem;
     }
   }
   .scroll-line {
@@ -963,10 +959,12 @@
 
 <!-- HERO -->
 <section id="home">
-  <div class="hero-bg"><img src="img-bg.jpg" alt="AYES2026"></div>
-  <div class="hero-scroll" id="heroScroll">
-    <span>SCROLL</span>
-    <div class="scroll-line"></div>
+  <div class="hero-bg">
+    <img src="img-bg.jpg" alt="AYES2026">
+    <div class="hero-scroll" id="heroScroll">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
+    </div>
   </div>
 </section>
 
