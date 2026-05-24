@@ -1260,14 +1260,14 @@ if(savedTheme === 'light') {
     el.style.top    = clamp(top,  0, window.innerHeight - SIZE) + 'px';
   }
 
-  // ── Mouse ──
+  // ── Mouse (desktop) ──
   el.addEventListener('mousedown', e => {
     moved = false;
     const pos = getPos();
     startX = e.clientX; startY = e.clientY;
     startLeft = pos.left; startTop = pos.top;
     el.classList.add('dragging');
-    e.preventDefault(); // 阻止 click，桌面端由 mouseup 处理
+    e.preventDefault();
 
     function onMove(e) {
       const dx = e.clientX - startX, dy = e.clientY - startY;
@@ -1284,7 +1284,7 @@ if(savedTheme === 'light') {
     document.addEventListener('mouseup', onUp);
   });
 
-  // ── Touch ──
+  // ── Touch (mobile) ──
   el.addEventListener('touchstart', e => {
     moved = false;
     const t = e.touches[0];
@@ -1292,6 +1292,7 @@ if(savedTheme === 'light') {
     startX = t.clientX; startY = t.clientY;
     startLeft = pos.left; startTop = pos.top;
     el.classList.add('dragging');
+    e.stopPropagation();
   }, { passive: true });
 
   el.addEventListener('touchmove', e => {
@@ -1304,14 +1305,13 @@ if(savedTheme === 'light') {
     }
   }, { passive: false });
 
-  el.addEventListener('touchend', () => {
+  el.addEventListener('touchend', e => {
     el.classList.remove('dragging');
-  });
-
-  // click 事件在轻触时由浏览器自动触发，拖动时 moved=true 则跳过
-  el.addEventListener('click', () => {
-    if(!moved) toggle();
-  });
+    if(!moved) {
+      toggle();
+      e.preventDefault(); // 阻止后续触发 click 导致 toggle 执行两次
+    }
+  }, { passive: false });
 
 })(themeToggle);
 
