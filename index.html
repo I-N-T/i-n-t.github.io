@@ -129,7 +129,7 @@
   .hero-bg {
     width: 100%;
     max-width: 100%;
-    aspect-ratio: 1812 / 1279;
+    aspect-ratio: 1812 / 1099;
     position: relative;
     margin: calc(var(--nav-h) * 0.3) auto 0;
     flex-shrink: 0;
@@ -155,7 +155,10 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   .hero-scroll {
-    margin: 1.2rem auto 0;
+    position: fixed;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
     font-family: 'Space Mono', monospace;
     font-size: 0.6rem;
@@ -163,8 +166,10 @@
     color: rgba(201,168,76,0.5);
     animation: fadeUp 1.2s 0.8s cubic-bezier(0.16,1,0.3,1) both;
     z-index: 2;
-    position: relative;
+    pointer-events: none;
   }
+  /* Hide scroll indicator once user scrolls past hero */
+  body.scrolled .hero-scroll { opacity: 0; transition: opacity 0.4s; }
   .scroll-line {
     width: 1px; height: 50px;
     background: linear-gradient(180deg, var(--gold-dim), transparent);
@@ -909,7 +914,7 @@
     }
     .hero-bg img { width: 100%; height: auto; display: block; }
     .hero-bg::after { display: none; }
-    .hero-scroll { margin: 0.6rem auto 1rem; position: relative; bottom: auto; left: auto; transform: none; }
+    .hero-scroll { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); margin: 0; }
     .gallery-stage { aspect-ratio: 1/1; max-height: 90vw; }
     .footer-inner { flex-direction: column; gap: 1.2rem; text-align: center; }
     .footer-inner > div { text-align: center !important; }
@@ -1392,6 +1397,9 @@ const fill = document.getElementById('progressFill');
 window.addEventListener('scroll', () => {
   const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
   fill.style.width = pct + '%';
+  // Hide scroll indicator after scrolling past hero
+  const heroH = document.getElementById('home').offsetHeight;
+  document.body.classList.toggle('scrolled', window.scrollY > heroH * 0.6);
 });
 
 // ─── Active nav ───
