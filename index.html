@@ -370,7 +370,7 @@
   }
   .past-slide img {
     width: 100%; height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
     display: block;
   }
@@ -723,6 +723,95 @@
     transition: width 0.1s;
   }
 
+  /* ─── LIGHT MODE ─── */
+  body.light-mode {
+    --gold: #5BA3E8;
+    --gold-light: #82BFFF;
+    --gold-dim: #2E7BD4;
+    --ink: #0A1929;
+    --ink-mid: #0D2137;
+    --ink-soft: #112A44;
+    --cream: #FFFFFF;
+    --cream-dim: #E0EEFF;
+    --white: #FFFFFF;
+    --muted: #90B8D8;
+    background: #0A1929;
+    color: #FFFFFF;
+  }
+  body.light-mode nav {
+    background: rgba(10,25,41,0.92);
+    border-bottom-color: rgba(91,163,232,0.25);
+  }
+  body.light-mode .nav-logo { color: #5BA3E8; }
+  body.light-mode .nav-logo span { color: #82BFFF; }
+  body.light-mode .nav-links a { color: rgba(255,255,255,0.7); }
+  body.light-mode .nav-links a:hover { color: #82BFFF; }
+  body.light-mode .nav-links a::after { background: #5BA3E8; }
+  body.light-mode .nav-links a.active { color: #5BA3E8; }
+  body.light-mode .nav-cta { background: #1A5FA8 !important; color: #fff !important; }
+  body.light-mode .nav-cta:hover { background: #2E7BD4 !important; }
+  body.light-mode .nav-hamburger { border-color: rgba(91,163,232,0.4); }
+  body.light-mode .nav-hamburger span { background: #5BA3E8; }
+  body.light-mode .nav-links { background: rgba(10,25,41,0.97); border-bottom-color: rgba(91,163,232,0.15); }
+  body.light-mode #home { background: #0A1929; }
+  body.light-mode section { background: var(--ink); }
+  body.light-mode #news { background: var(--ink-mid); }
+  body.light-mode #about { background: #0D2137; }
+  body.light-mode #schedule { background: var(--ink); }
+  body.light-mode #past { background: var(--ink-mid); }
+  body.light-mode #reviews { background: var(--ink); }
+  body.light-mode #faq { background: #071320; }
+  body.light-mode #register { background: var(--ink); }
+  body.light-mode footer { background: #071320; border-top-color: rgba(91,163,232,0.15); }
+  body.light-mode .footer-logo { color: #5BA3E8; }
+  body.light-mode .footer-copy { color: #90B8D8; }
+  body.light-mode .progress-fill { background: linear-gradient(90deg, #1A5FA8, #5BA3E8, #82BFFF); }
+  body.light-mode .cursor-ring { border-color: #5BA3E8; }
+  body.light-mode .cursor-dot { background: #5BA3E8; }
+  body.light-mode .section-label { color: #5BA3E8; }
+  body.light-mode .section-label::before { background: #5BA3E8; }
+  body.light-mode .section-title { color: #FFFFFF; }
+  body.light-mode .section-title em { color: #5BA3E8; }
+  body.light-mode .scroll-line { background: linear-gradient(180deg, #5BA3E8, transparent); }
+  body.light-mode .faq-item { border-bottom-color: rgba(91,163,232,0.15); }
+  body.light-mode .faq-q-text { color: #FFFFFF; }
+  body.light-mode .faq-icon { border-color: rgba(91,163,232,0.4); color: #5BA3E8; }
+  body.light-mode .faq-a { color: #90B8D8; }
+  body.light-mode .gallery-stage { background: #071320; }
+  body.light-mode .gallery-arrow { background: rgba(91,163,232,0.15); border-color: rgba(91,163,232,0.4); color: #5BA3E8; }
+  body.light-mode .gallery-thumb.active { border-color: #5BA3E8; }
+  body.light-mode .gallery-counter { color: rgba(255,255,255,0.5); }
+
+  /* ─── THEME TOGGLE BUTTON ─── */
+  .theme-toggle {
+    background: none;
+    border: 1px solid rgba(201,168,76,0.35);
+    color: var(--gold);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { background: rgba(201,168,76,0.12); border-color: var(--gold); }
+  body.light-mode .theme-toggle { border-color: rgba(91,163,232,0.4); color: #5BA3E8; }
+  body.light-mode .theme-toggle:hover { background: rgba(91,163,232,0.12); }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px;
+    background: rgba(201,168,76,0.1);
+    z-index: 200;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-light));
+    width: 0%;
+    transition: width 0.1s;
+  }
+
   /* ─── MOBILE NAV ─── */
   .nav-hamburger {
     display: none;
@@ -746,6 +835,22 @@
   .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
   .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
   .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  /* Desktop: nav links always visible as row */
+  @media (min-width: 861px) {
+    .nav-hamburger { display: none !important; }
+    .nav-links {
+      display: flex !important;
+      flex-direction: row !important;
+      position: static !important;
+      transform: none !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      background: none !important;
+      padding: 0 !important;
+      border: none !important;
+    }
+  }
 
   @media (max-width: 860px) {
     nav { padding: 0 1.2rem; }
@@ -802,13 +907,13 @@
     .footer-inner { flex-direction: column; gap: 1.2rem; text-align: center; }
     .footer-inner > div { text-align: center !important; }
   }
-  /* Past gallery stage - landscape photos */
+  /* Past gallery stage - dynamic aspect ratio per image */
   #pastStage {
-    aspect-ratio: 16 / 9;
-    max-height: 60vh;
+    max-height: 70vh;
+    aspect-ratio: 3 / 2; /* default, overridden by JS */
   }
   @media (max-width: 860px) {
-    #pastStage { aspect-ratio: 4 / 3; max-height: 75vw; }
+    #pastStage { max-height: 80vw; }
   }
 </style></head>
 <body>
@@ -821,9 +926,12 @@
 <!-- NAV -->
 <nav id="mainNav">
   <a href="#home" class="nav-logo">AYES<span>2026</span></a>
-  <button class="nav-hamburger" id="hamburger" aria-label="菜单">
-    <span></span><span></span><span></span>
-  </button>
+  <div style="display:flex;align-items:center;gap:0.8rem;">
+    <button class="theme-toggle" id="themeToggle" aria-label="切换模式" title="切换白天/夜间模式">☀️</button>
+    <button class="nav-hamburger" id="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
   <ul class="nav-links" id="navLinks">
     <li><a href="#home" data-section="home">首页</a></li>
     <li><a href="#news" data-section="news">资讯动态</a></li>
@@ -850,15 +958,27 @@
   <div class="container">
     <p class="section-label reveal">资讯动态</p>
     <h2 class="section-title reveal reveal-delay-1">最新<em>资讯</em></h2>
-    <div class="reveal reveal-delay-2" style="margin-top:3rem;display:flex;flex-direction:column;align-items:flex-start;gap:1.5rem;">
-      <p style="font-size:0.9rem;color:rgba(245,240,232,0.55);font-weight:300;line-height:1.9;">关注厦一实践官方QQ空间，获取 AYES2026 最新动态与资讯。</p>
-      <a href="http://3434972583.qzone.qq.com" target="_blank"
-        style="display:inline-flex;align-items:center;gap:0.6rem;background:transparent;border:1px solid rgba(201,168,76,0.5);color:var(--gold);padding:0.75rem 1.8rem;font-family:'Noto Serif SC',serif;font-size:0.85rem;font-weight:400;letter-spacing:0.15em;text-decoration:none;transition:background 0.3s,border-color 0.3s,color 0.3s;"
-        onmouseover="this.style.background='rgba(201,168,76,0.12)';this.style.borderColor='var(--gold)'"
-        onmouseout="this.style.background='transparent';this.style.borderColor='rgba(201,168,76,0.5)'">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-        前往 QQ 空间查看动态 →
-      </a>
+    <div class="reveal reveal-delay-2" style="margin-top:3rem;display:flex;gap:3rem;align-items:flex-start;flex-wrap:wrap;">
+
+      <!-- QQ群 -->
+      <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:1.2rem;">
+        <p style="font-size:0.9rem;color:rgba(245,240,232,0.55);font-weight:300;line-height:1.9;">欢迎加入官方社群（QQ）获取更多信息：1103185800</p>
+        <p style="font-size:0.9rem;color:rgba(245,240,232,0.55);font-weight:300;line-height:1.9;">关注官方QQ空间、厦门一中学生会微信公众号，及时获取 AYES2026 报名通知、活动详情及最新消息。</p>
+      </div>
+
+      <!-- 微信公众号二维码 -->
+      <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:0.8rem;">
+        <a href="http://3434972583.qzone.qq.com" target="_blank"
+          style="display:inline-flex;align-items:center;justify-content:center;width:150px;background:transparent;border:1px solid rgba(201,168,76,0.5);color:var(--gold);padding:0.6rem 0;font-family:'Noto Serif SC',serif;font-size:0.78rem;font-weight:400;letter-spacing:0.1em;text-decoration:none;transition:background 0.3s;"
+          onmouseover="this.style.background='rgba(201,168,76,0.12)'"
+          onmouseout="this.style.background='transparent'">
+          关注官方 QQ 空间 →
+        </a>
+        <img src="xysu.jpg" alt="厦门一中学生会官方微信公众号"
+          style="width:150px;height:150px;display:block;border:1px solid rgba(201,168,76,0.2);padding:6px;background:#fff;">
+        <p style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;color:var(--muted);text-align:center;">扫码关注厦门一中学生会微信公众号</p>
+      </div>
+
     </div>
   </div>
 </section>
@@ -980,20 +1100,20 @@
       </div>
 
       <!-- Main stage -->
-      <div class="gallery-stage" id="pastStage">
-        <div class="past-slide active" data-past="0"><img src="past-1.jpg" alt="往届图片1"></div>
-        <div class="past-slide" data-past="1"><img src="past-2.jpg" alt="往届图片2"></div>
-        <div class="past-slide" data-past="2"><img src="past-3.jpg" alt="往届图片3"></div>
-        <div class="past-slide" data-past="3"><img src="past-4.jpg" alt="往届图片4"></div>
-        <div class="past-slide" data-past="4"><img src="past-5.jpg" alt="往届图片5"></div>
-        <div class="past-slide" data-past="5"><img src="past-6.jpg" alt="往届图片6"></div>
-        <div class="past-slide" data-past="6"><img src="past-7.jpg" alt="往届图片7"></div>
-        <div class="past-slide" data-past="7"><img src="past-8.jpg" alt="往届图片8"></div>
-        <div class="past-slide" data-past="8"><img src="past-9.jpg" alt="往届图片9"></div>
-        <div class="past-slide" data-past="9"><img src="past-10.jpg" alt="往届图片10"></div>
-        <div class="past-slide" data-past="10"><img src="past-11.jpg" alt="往届图片11"></div>
-        <div class="past-slide" data-past="11"><img src="past-12.jpg" alt="往届图片12"></div>
-        <div class="past-slide" data-past="12"><img src="past-13.jpg" alt="往届图片13"></div>
+      <div class="gallery-stage" id="pastStage" style="background:#08090d;">
+        <div class="past-slide active" data-past="0" data-ratio="972/646"><img src="past-1.jpg" alt="往届图片1"></div>
+        <div class="past-slide" data-past="1" data-ratio="681/1024"><img src="past-2.jpg" alt="往届图片2"></div>
+        <div class="past-slide" data-past="2" data-ratio="1600/2400"><img src="past-3.jpg" alt="往届图片3"></div>
+        <div class="past-slide" data-past="3" data-ratio="2400/1600"><img src="past-4.jpg" alt="往届图片4"></div>
+        <div class="past-slide" data-past="4" data-ratio="972/646"><img src="past-5.jpg" alt="往届图片5"></div>
+        <div class="past-slide" data-past="5" data-ratio="6048/4024"><img src="past-6.jpg" alt="往届图片6"></div>
+        <div class="past-slide" data-past="6" data-ratio="2400/1600"><img src="past-7.jpg" alt="往届图片7"></div>
+        <div class="past-slide" data-past="7" data-ratio="1440/1080"><img src="past-8.jpg" alt="往届图片8"></div>
+        <div class="past-slide" data-past="8" data-ratio="2405/1600"><img src="past-9.jpg" alt="往届图片9"></div>
+        <div class="past-slide" data-past="9" data-ratio="2405/1600"><img src="past-10.jpg" alt="往届图片10"></div>
+        <div class="past-slide" data-past="10" data-ratio="2400/1600"><img src="past-11.jpg" alt="往届图片11"></div>
+        <div class="past-slide" data-past="11" data-ratio="2400/1600"><img src="past-12.jpg" alt="往届图片12"></div>
+        <div class="past-slide" data-past="12" data-ratio="2401/1600"><img src="past-13.jpg" alt="往届图片13"></div>
 
         <button class="gallery-arrow prev" id="pastPrev">&#8592;</button>
         <button class="gallery-arrow next" id="pastNext">&#8594;</button>
@@ -1020,9 +1140,33 @@
   <div class="container">
     <p class="section-label reveal">解答疑惑</p>
     <h2 class="section-title reveal reveal-delay-1">常见<em>问题</em></h2>
-    <div class="reveal reveal-delay-2" style="margin-top:3rem;display:flex;justify-content:center;">
-      <img src="img-faq.jpg" alt="Q&A答疑时间"
-        style="width:100%;max-width:480px;height:auto;display:block;border:1px solid rgba(201,168,76,0.15);">
+    <div class="faq-list reveal reveal-delay-2">
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Q1 今年的早鸟报名形式有什么不一样？</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">早鸟报名运用收集表进行预登记，由「报名」向「登记」转变，正式报名仍采用网站填写笔试的形式。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Q2 今年的早鸟报名为什么是「预登记」？</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">预登记主要的不同是增加了市场调查环节，我们会根据结果调整优化活动，提升活动的质量。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Q3 那怎么进行预登记呢？</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">扫描二维码进入收集表，完成问卷后就登记成功了。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Q4 早鸟报名在报名费上是否体现出优惠？</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">这是我们的收费标准，优惠可以叠加：<br>· 原价 198；<br>· 早鸟 / 中高考（需要出示准考证）148；<br>· 「老带新」：老选手新选手各减30；<br>· 集赞（任一社交媒体转发官号单篇集满60赞）减15。</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="faq-q-text">Q5 完成预登记后有什么需要注意的吗？</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">完成预登记后一定不要忘记在正式报名时完成笔试问题哦！厦一实践期待与您在这个夏天度过美好的时光。</div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1054,6 +1198,7 @@
         <div style="border:1px solid rgba(201,168,76,0.12);padding:1.5rem 2rem;background:rgba(201,168,76,0.03);">
           <p style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.3em;color:var(--gold);margin-bottom:0.8rem;">参与资格</p>
           <p style="font-size:0.88rem;color:rgba(245,240,232,0.65);font-weight:300;line-height:1.9;">选手通过笔试、面试之后获得参与资格，具体时间将在后续的官方QQ动态中发布。</p>
+          <p style="font-size:0.88rem;color:rgba(245,240,232,0.65);font-weight:300;line-height:1.9;margin-top:0.8rem;">官号将在笔试通过名单出炉后通知每个通过笔试的选手，通过面试后方可获得参会资格。</p>
         </div>
         <div style="border:1px solid rgba(201,168,76,0.2);padding:2rem;">
           <p style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.3em;color:var(--gold);margin-bottom:0.8rem;">笔试试题</p>
@@ -1077,7 +1222,7 @@
     <div class="footer-inner">
       <div class="footer-logo">AYES<em style="font-style:italic;color:var(--gold-dim)">2026</em></div>
       <div style="text-align:right;">
-        <p class="footer-copy">详情请咨询厦一实践官方QQ / 3434972583</p>
+        <p class="footer-copy">欢迎加入官方社群（QQ）获取更多信息：1103185800</p>
         <p class="footer-copy" style="margin-top:0.5rem;">主办：福建省厦门第一中学</p>
         <p class="footer-copy" style="margin-top:0.3rem;">协办单位：厦门大学信息学院软件工程系、字节跳动火山引擎、数智引力（厦门）运动科技、厦门快快网络科技、厦门众联世纪</p>
         <p class="footer-copy" style="margin-top:0.3rem;">指导单位：厦门市教育局、厦门市学生联合会</p>
@@ -1087,6 +1232,16 @@
 </footer>
 
 <script>
+// ─── Theme toggle ───
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('ayes-theme');
+if(savedTheme === 'light') { document.body.classList.add('light-mode'); themeToggle.textContent = '🌙'; }
+themeToggle.addEventListener('click', () => {
+  const isLight = document.body.classList.toggle('light-mode');
+  themeToggle.textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('ayes-theme', isLight ? 'light' : 'dark');
+});
+
 // ─── Hamburger menu ───
 const hamburger   = document.getElementById('hamburger');
 const navMenu     = document.getElementById('navLinks');
@@ -1211,7 +1366,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 // ─── Past Gallery ───
 (function initPastGallery(){
   const slides  = document.querySelectorAll('.past-slide');
-  const thumbs  = document.querySelectorAll('[data-past]');
   const pThumbs = document.querySelectorAll('#pastThumbs .gallery-thumb');
   const counter = document.getElementById('pastCounter');
   const stage   = document.getElementById('pastStage');
@@ -1220,6 +1374,11 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   let autoTimer = null;
   let isVisible = false;
 
+  function updateRatio(idx) {
+    const ratio = slides[idx].dataset.ratio;
+    if(ratio) stage.style.aspectRatio = ratio;
+  }
+
   function goTo(idx, fromUser) {
     slides[current].classList.remove('active');
     pThumbs[current].classList.remove('active');
@@ -1227,6 +1386,7 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     slides[current].classList.add('active');
     pThumbs[current].classList.add('active');
     counter.textContent = (current + 1) + ' / ' + total;
+    updateRatio(current);
     if(fromUser) pThumbs[current].scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
     if(isVisible) resetAuto();
   }
@@ -1245,7 +1405,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   document.getElementById('pastPrev').addEventListener('click', () => goTo(current - 1, true));
   document.getElementById('pastNext').addEventListener('click', () => goTo(current + 1, true));
 
-  // 键盘：仅在鼠标悬停于图库时响应，避免与页面滚动条冲突
   let mouseOver = false;
   stage.addEventListener('mouseenter', () => { mouseOver = true;  clearInterval(autoTimer); });
   stage.addEventListener('mouseleave', () => { mouseOver = false; if(isVisible) startAuto(); });
@@ -1261,6 +1420,8 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     const dx = e.changedTouches[0].clientX - touchStartX;
     if(Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1), true);
   });
+
+  updateRatio(0);
 })();
 
 // ─── FAQ ───
