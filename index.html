@@ -1267,7 +1267,7 @@ if(savedTheme === 'light') {
     startX = e.clientX; startY = e.clientY;
     startLeft = pos.left; startTop = pos.top;
     el.classList.add('dragging');
-    e.preventDefault();
+    e.preventDefault(); // 阻止 click，桌面端由 mouseup 处理
 
     function onMove(e) {
       const dx = e.clientX - startX, dy = e.clientY - startY;
@@ -1285,10 +1285,8 @@ if(savedTheme === 'light') {
   });
 
   // ── Touch ──
-  let touchStartTime = 0;
   el.addEventListener('touchstart', e => {
     moved = false;
-    touchStartTime = Date.now();
     const t = e.touches[0];
     const pos = getPos();
     startX = t.clientX; startY = t.clientY;
@@ -1308,11 +1306,11 @@ if(savedTheme === 'light') {
 
   el.addEventListener('touchend', () => {
     el.classList.remove('dragging');
-    const elapsed = Date.now() - touchStartTime;
-    // 时间短且没移动 → 点击
-    if(!moved && elapsed < 300) {
-      toggle();
-    }
+  });
+
+  // click 事件在轻触时由浏览器自动触发，拖动时 moved=true 则跳过
+  el.addEventListener('click', () => {
+    if(!moved) toggle();
   });
 
 })(themeToggle);
