@@ -162,14 +162,21 @@
     color: rgba(201,168,76,0.5);
     pointer-events: none;
     z-index: 2;
-    position: absolute;
-    bottom: 1.8rem;
-    left: 50%;
-    transform: translateX(-50%);
+  }
+  /* Desktop: sit just below image bottom, which is nav-h + image-height from top */
+  @media (min-width: 861px) {
+    .hero-scroll {
+      position: absolute;
+      /* image top = nav-h, image height = 100vw * 1099/1812 */
+      top: calc(var(--nav-h) + 100vw * 1099 / 1812 - 5rem);
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
   @media (max-width: 860px) {
     .hero-scroll {
-      bottom: 1rem;
+      position: relative;
+      margin: 0.8rem auto 0.5rem;
     }
   }
   .scroll-line {
@@ -961,10 +968,10 @@
 <section id="home">
   <div class="hero-bg">
     <img src="img-bg.jpg" alt="AYES2026">
-    <div class="hero-scroll" id="heroScroll">
-      <span>SCROLL</span>
-      <div class="scroll-line"></div>
-    </div>
+  </div>
+  <div class="hero-scroll" id="heroScroll">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
   </div>
 </section>
 
