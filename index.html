@@ -163,15 +163,8 @@
     pointer-events: none;
     z-index: 50;
   }
-  /* Desktop: sit just below image bottom, which is nav-h + image-height from top */
   @media (min-width: 861px) {
-    .hero-scroll {
-      position: absolute;
-      /* image top = nav-h, image height = 100vw * 1099/1812 */
-      top: calc(var(--nav-h) + 100vw * 1099 / 1812 - 5rem);
-      left: 50%;
-      transform: translateX(-50%);
-    }
+    .hero-scroll { display: none; }
   }
   @media (max-width: 860px) {
     .hero-scroll {
