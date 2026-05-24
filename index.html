@@ -1092,39 +1092,31 @@
       <!-- Thumbnail strip -->
       <div class="gallery-thumbs" id="pastThumbs">
         <div class="gallery-thumb active" data-past="0"><img src="past-1.jpg" alt="往届图片1"></div>
-        <div class="gallery-thumb" data-past="1"><img src="past-2.jpg" alt="往届图片2"></div>
-        <div class="gallery-thumb" data-past="2"><img src="past-3.jpg" alt="往届图片3"></div>
-        <div class="gallery-thumb" data-past="3"><img src="past-4.jpg" alt="往届图片4"></div>
-        <div class="gallery-thumb" data-past="4"><img src="past-5.jpg" alt="往届图片5"></div>
-        <div class="gallery-thumb" data-past="5"><img src="past-6.jpg" alt="往届图片6"></div>
-        <div class="gallery-thumb" data-past="6"><img src="past-7.jpg" alt="往届图片7"></div>
-        <div class="gallery-thumb" data-past="7"><img src="past-8.jpg" alt="往届图片8"></div>
-        <div class="gallery-thumb" data-past="8"><img src="past-9.jpg" alt="往届图片9"></div>
-        <div class="gallery-thumb" data-past="9"><img src="past-10.jpg" alt="往届图片10"></div>
-        <div class="gallery-thumb" data-past="10"><img src="past-11.jpg" alt="往届图片11"></div>
-        <div class="gallery-thumb" data-past="11"><img src="past-12.jpg" alt="往届图片12"></div>
-        <div class="gallery-thumb" data-past="12"><img src="past-13.jpg" alt="往届图片13"></div>
+        <div class="gallery-thumb" data-past="1"><img src="past-4.jpg" alt="往届图片4"></div>
+        <div class="gallery-thumb" data-past="2"><img src="past-5.jpg" alt="往届图片5"></div>
+        <div class="gallery-thumb" data-past="3"><img src="past-7.jpg" alt="往届图片7"></div>
+        <div class="gallery-thumb" data-past="4"><img src="past-8.jpg" alt="往届图片8"></div>
+        <div class="gallery-thumb" data-past="5"><img src="past-9.jpg" alt="往届图片9"></div>
+        <div class="gallery-thumb" data-past="6"><img src="past-10.jpg" alt="往届图片10"></div>
+        <div class="gallery-thumb" data-past="7"><img src="past-12.jpg" alt="往届图片12"></div>
+        <div class="gallery-thumb" data-past="8"><img src="past-13.jpg" alt="往届图片13"></div>
       </div>
 
       <!-- Main stage -->
       <div class="gallery-stage" id="pastStage">
         <div class="past-slide active" data-past="0" data-ratio="972/646"><img src="past-1.jpg" alt="往届图片1"></div>
-        <div class="past-slide" data-past="1" data-ratio="681/1024"><img src="past-2.jpg" alt="往届图片2"></div>
-        <div class="past-slide" data-past="2" data-ratio="1600/2400"><img src="past-3.jpg" alt="往届图片3"></div>
-        <div class="past-slide" data-past="3" data-ratio="2400/1600"><img src="past-4.jpg" alt="往届图片4"></div>
-        <div class="past-slide" data-past="4" data-ratio="972/646"><img src="past-5.jpg" alt="往届图片5"></div>
-        <div class="past-slide" data-past="5" data-ratio="6048/4024"><img src="past-6.jpg" alt="往届图片6"></div>
-        <div class="past-slide" data-past="6" data-ratio="2400/1600"><img src="past-7.jpg" alt="往届图片7"></div>
-        <div class="past-slide" data-past="7" data-ratio="1440/1080"><img src="past-8.jpg" alt="往届图片8"></div>
-        <div class="past-slide" data-past="8" data-ratio="2405/1600"><img src="past-9.jpg" alt="往届图片9"></div>
-        <div class="past-slide" data-past="9" data-ratio="2405/1600"><img src="past-10.jpg" alt="往届图片10"></div>
-        <div class="past-slide" data-past="10" data-ratio="2400/1600"><img src="past-11.jpg" alt="往届图片11"></div>
-        <div class="past-slide" data-past="11" data-ratio="2400/1600"><img src="past-12.jpg" alt="往届图片12"></div>
-        <div class="past-slide" data-past="12" data-ratio="2401/1600"><img src="past-13.jpg" alt="往届图片13"></div>
+        <div class="past-slide" data-past="1" data-ratio="2400/1600"><img src="past-4.jpg" alt="往届图片4"></div>
+        <div class="past-slide" data-past="2" data-ratio="972/646"><img src="past-5.jpg" alt="往届图片5"></div>
+        <div class="past-slide" data-past="3" data-ratio="2400/1600"><img src="past-7.jpg" alt="往届图片7"></div>
+        <div class="past-slide" data-past="4" data-ratio="1440/1080"><img src="past-8.jpg" alt="往届图片8"></div>
+        <div class="past-slide" data-past="5" data-ratio="2405/1600"><img src="past-9.jpg" alt="往届图片9"></div>
+        <div class="past-slide" data-past="6" data-ratio="2405/1600"><img src="past-10.jpg" alt="往届图片10"></div>
+        <div class="past-slide" data-past="7" data-ratio="2400/1600"><img src="past-12.jpg" alt="往届图片12"></div>
+        <div class="past-slide" data-past="8" data-ratio="2401/1600"><img src="past-13.jpg" alt="往届图片13"></div>
 
         <button class="gallery-arrow prev" id="pastPrev">&#8592;</button>
         <button class="gallery-arrow next" id="pastNext">&#8594;</button>
-        <div class="gallery-counter" id="pastCounter">1 / 13</div>
+        <div class="gallery-counter" id="pastCounter">1 / 9</div>
       </div>
 
     </div>
@@ -1293,10 +1285,10 @@ if(savedTheme === 'light') {
   });
 
   // ── Touch ──
-  let tapping = false;
+  let touchStartTime = 0;
   el.addEventListener('touchstart', e => {
     moved = false;
-    tapping = true;
+    touchStartTime = Date.now();
     const t = e.touches[0];
     const pos = getPos();
     startX = t.clientX; startY = t.clientY;
@@ -1309,7 +1301,6 @@ if(savedTheme === 'light') {
     const dx = t.clientX - startX, dy = t.clientY - startY;
     if(Math.abs(dx) > 8 || Math.abs(dy) > 8) {
       moved = true;
-      tapping = false;
       applyPos(startLeft + dx, startTop + dy);
       e.preventDefault();
     }
@@ -1317,10 +1308,11 @@ if(savedTheme === 'light') {
 
   el.addEventListener('touchend', () => {
     el.classList.remove('dragging');
-    if(tapping && !moved) {
+    const elapsed = Date.now() - touchStartTime;
+    // 时间短且没移动 → 点击
+    if(!moved && elapsed < 300) {
       toggle();
     }
-    tapping = false;
   });
 
 })(themeToggle);
