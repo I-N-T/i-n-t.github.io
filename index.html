@@ -127,7 +127,7 @@
     padding-top: 0;
   }
   .hero-bg {
-    width: auto;
+    width: 100%;
     max-width: 100%;
     max-height: calc(100vh - var(--nav-h));
     aspect-ratio: 1812 / 1279;
@@ -140,6 +140,7 @@
     height: 100%;
     display: block;
     object-fit: cover;
+    object-position: center top;
   }
   .hero-bg::after {
     content: '';
@@ -1180,24 +1181,24 @@
     <div class="reveal reveal-delay-2" style="margin-top:3rem;display:flex;gap:3rem;align-items:flex-start;flex-wrap:wrap;">
 
       <!-- 招生对象 -->
-      <div style="flex:1;min-width:260px;border:1px solid rgba(201,168,76,0.2);padding:2.5rem;">
+      <div style="flex:1;min-width:260px;border:1px solid rgba(201,168,76,0.2);padding:2.5rem;display:flex;flex-direction:column;">
         <p style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.3em;color:var(--gold);margin-bottom:1.5rem;">招生对象</p>
         <div style="margin-bottom:1.6rem;">
           <p style="font-size:0.72rem;font-family:'Space Mono',monospace;letter-spacing:0.15em;color:var(--gold-dim);margin-bottom:0.6rem;">面向年级 / 学段</p>
           <p style="font-size:0.92rem;color:rgba(245,240,232,0.75);font-weight:300;line-height:1.9;">全福建省准高一至准大一学生</p>
         </div>
-        <div style="border-top:1px solid rgba(201,168,76,0.1);padding-top:1.6rem;">
+        <div style="border-top:1px solid rgba(201,168,76,0.1);padding-top:1.6rem;margin-bottom:1.6rem;">
           <p style="font-size:0.72rem;font-family:'Space Mono',monospace;letter-spacing:0.15em;color:var(--gold-dim);margin-bottom:0.6rem;">特长背景</p>
           <p style="font-size:0.92rem;color:rgba(245,240,232,0.75);font-weight:300;line-height:1.9;">对人工智能、计算机科学、科技竞赛感兴趣，或有一定编程基础</p>
+        </div>
+        <div style="border-top:1px solid rgba(201,168,76,0.1);padding-top:1.6rem;margin-top:auto;">
+          <p style="font-size:0.72rem;font-family:'Space Mono',monospace;letter-spacing:0.15em;color:var(--gold-dim);margin-bottom:0.6rem;">参与资格</p>
+          <p style="font-size:0.88rem;color:rgba(245,240,232,0.65);font-weight:300;line-height:1.9;">请有意向报名的同学填写笔试表格，报名截止后我们将私信联系笔试通过的同学，公布面试时间地点，面试结束后被公布通过的选手获得参加资格。</p>
         </div>
       </div>
 
       <!-- 报名通道 + 笔试 -->
       <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:2rem;">
-        <div style="border:1px solid rgba(201,168,76,0.12);padding:1.5rem 2rem;background:rgba(201,168,76,0.03);">
-          <p style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.3em;color:var(--gold);margin-bottom:0.8rem;">参与资格</p>
-          <p style="font-size:0.88rem;color:rgba(245,240,232,0.65);font-weight:300;line-height:1.9;">请有意向报名的同学填写笔试表格，报名截止后我们将私信联系笔试通过的同学，公布面试时间地点，面试结束后被公布通过的选手获得参加资格。</p>
-        </div>
         <div style="border:1px solid rgba(201,168,76,0.12);padding:1.5rem 2rem;background:rgba(201,168,76,0.03);">
           <p style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:0.3em;color:var(--gold);margin-bottom:1rem;">收费标准</p>
           <p style="font-size:0.82rem;color:rgba(245,240,232,0.55);font-weight:300;margin-bottom:0.5rem;line-height:1.8;">优惠可叠加</p>
