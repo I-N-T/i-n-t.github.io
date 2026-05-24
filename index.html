@@ -1262,13 +1262,13 @@ if(savedTheme === 'light') {
   function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
 
   function applyPos(left, top) {
-    el.style.right = 'auto';
+    el.style.right  = 'auto';
     el.style.bottom = 'auto';
-    el.style.left = clamp(left, 0, window.innerWidth  - SIZE) + 'px';
-    el.style.top  = clamp(top,  0, window.innerHeight - SIZE) + 'px';
+    el.style.left   = clamp(left, 0, window.innerWidth  - SIZE) + 'px';
+    el.style.top    = clamp(top,  0, window.innerHeight - SIZE) + 'px';
   }
 
-  // Mouse
+  // ── Mouse ──
   el.addEventListener('mousedown', e => {
     moved = false;
     const pos = getPos();
@@ -1282,7 +1282,7 @@ if(savedTheme === 'light') {
       if(Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
       applyPos(startLeft + dx, startTop + dy);
     }
-    function onUp(e) {
+    function onUp() {
       el.classList.remove('dragging');
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
@@ -1292,9 +1292,11 @@ if(savedTheme === 'light') {
     document.addEventListener('mouseup', onUp);
   });
 
-  // Touch
+  // ── Touch ──
+  let tapping = false;
   el.addEventListener('touchstart', e => {
     moved = false;
+    tapping = true;
     const t = e.touches[0];
     const pos = getPos();
     startX = t.clientX; startY = t.clientY;
@@ -1305,14 +1307,20 @@ if(savedTheme === 'light') {
   el.addEventListener('touchmove', e => {
     const t = e.touches[0];
     const dx = t.clientX - startX, dy = t.clientY - startY;
-    if(Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
-    applyPos(startLeft + dx, startTop + dy);
-    e.preventDefault();
+    if(Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+      moved = true;
+      tapping = false;
+      applyPos(startLeft + dx, startTop + dy);
+      e.preventDefault();
+    }
   }, { passive: false });
 
   el.addEventListener('touchend', () => {
     el.classList.remove('dragging');
-    if(!moved) toggle();
+    if(tapping && !moved) {
+      toggle();
+    }
+    tapping = false;
   });
 
 })(themeToggle);
